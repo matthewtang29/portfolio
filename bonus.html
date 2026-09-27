@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minefield</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bonus.css">
+</head>
+<body>
+<div class="console">
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <header>
+    <div>
+      <h1>Minefield</h1>
+      <p class="subtitle">A grid-clearance exercise. Clear every safe cell without triggering a mine.</p>
+    </div>
+    <div class="status-chip">
+      <span class="led" id="led"></span>
+      <span id="ledText">Standby</span>
+    </div>
+  </header>
+
+  <div class="difficulty-row" id="difficultyRow" role="group" aria-label="Grid size">
+    <button class="diff-btn" data-diff="beginner" aria-pressed="true">
+      <span class="name">Beginner</span>
+      <span class="meta">9×9 grid, 10 mines</span>
+    </button>
+    <button class="diff-btn" data-diff="intermediate" aria-pressed="false">
+      <span class="name">Intermediate</span>
+      <span class="meta">16×16 grid, 40 mines</span>
+    </button>
+    <button class="diff-btn" data-diff="expert" aria-pressed="false">
+      <span class="name">Expert</span>
+      <span class="meta">30×16 grid, 99 mines</span>
+    </button>
+  </div>
+
+  <div class="readout-row">
+    <div class="lcd-wrap">
+      <div class="lcd" id="mineCounter">010</div>
+      <div class="lcd-label">Mines left</div>
+    </div>
+    <button class="reset-btn" id="resetBtn">New game</button>
+    <div class="lcd-wrap">
+      <div class="lcd" id="timer">000</div>
+      <div class="lcd-label">Seconds</div>
+    </div>
+  </div>
+
+  <div class="board-scroll">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <p class="status-line" id="statusLine">Ready. Click any cell to begin.</p>
+
+  <footer>
+    Click or tap a cell to clear it. Right-click, or press and hold on touch, to flag a suspected mine.
+    With a cell focused, press F to flag it instead.
+  </footer>
+</div>
+
+<script src="bonus.js"></script>
+</body>
+</html>
