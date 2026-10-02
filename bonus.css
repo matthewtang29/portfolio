@@ -30,11 +30,6 @@
   --num-6: #1E9A8E;
   --num-7: #1F2430;
   --num-8: #6B7080;
-
-  /* the mascots */
-  --bot-bolt: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 44'%3E %3Cline x1='24' y1='10' x2='24' y2='3' stroke='%231F2430' stroke-width='2.5' stroke-linecap='round'/%3E %3Ccircle cx='24' cy='4' r='3.5' fill='%23E23B3B' stroke='%231F2430' stroke-width='2'/%3E %3Crect x='8' y='10' width='32' height='26' rx='7' fill='%232BB3A6' stroke='%231F2430' stroke-width='2.5'/%3E %3Crect x='13' y='16' width='22' height='11' rx='4' fill='%23fff' stroke='%231F2430' stroke-width='2'/%3E %3Crect x='17' y='19' width='4' height='5' rx='1.5' fill='%231F2430'/%3E %3Crect x='27' y='19' width='4' height='5' rx='1.5' fill='%231F2430'/%3E %3Crect x='5' y='36' width='10' height='7' rx='3.5' fill='%232BB3A6' stroke='%231F2430' stroke-width='2.5'/%3E %3Crect x='33' y='36' width='10' height='7' rx='3.5' fill='%232BB3A6' stroke='%231F2430' stroke-width='2.5'/%3E %3C/svg%3E");
-  --bot-visor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 44'%3E %3Cpath d='M9 38 A15 15 0 0 1 39 38 Z' fill='%23F28C28' stroke='%231F2430' stroke-width='2.5' stroke-linejoin='round'/%3E %3Cpath d='M14 30 h20 a3 3 0 0 1 0 6 h-20 a3 3 0 0 1 0 -6z' fill='%231F2430'/%3E %3Ccircle cx='29' cy='33' r='2' fill='%23F5C842'/%3E %3Cline x1='16' y1='17' x2='12' y2='10' stroke='%231F2430' stroke-width='2.5' stroke-linecap='round'/%3E %3Cline x1='32' y1='17' x2='36' y2='10' stroke='%231F2430' stroke-width='2.5' stroke-linecap='round'/%3E %3Ccircle cx='12' cy='10' r='2.5' fill='%231F2430'/%3E%3Ccircle cx='36' cy='10' r='2.5' fill='%231F2430'/%3E %3Crect x='6' y='37' width='10' height='6' rx='3' fill='%23F28C28' stroke='%231F2430' stroke-width='2.5'/%3E %3Crect x='32' y='37' width='10' height='6' rx='3' fill='%23F28C28' stroke='%231F2430' stroke-width='2.5'/%3E %3C/svg%3E");
-  --bot-gear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 44'%3E %3Crect x='4' y='18' width='6' height='10' rx='2' fill='%23F5C842' stroke='%231F2430' stroke-width='2.5'/%3E %3Crect x='38' y='18' width='6' height='10' rx='2' fill='%23F5C842' stroke='%231F2430' stroke-width='2.5'/%3E %3Crect x='10' y='12' width='28' height='26' rx='13' fill='%23F5C842' stroke='%231F2430' stroke-width='2.5'/%3E %3Ccircle cx='19' cy='24' r='4' fill='%23fff' stroke='%231F2430' stroke-width='2'/%3E %3Ccircle cx='29' cy='24' r='4' fill='%23fff' stroke='%231F2430' stroke-width='2'/%3E %3Ccircle cx='20' cy='25' r='1.8' fill='%231F2430'/%3E%3Ccircle cx='30' cy='25' r='1.8' fill='%231F2430'/%3E %3Cpath d='M21 31 q3 2.5 6 0' fill='none' stroke='%231F2430' stroke-width='2' stroke-linecap='round'/%3E %3Cpath d='M24 12 v-5 l-3 -3 M24 7 l3 -3' fill='none' stroke='%231F2430' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E %3Crect x='8' y='37' width='10' height='6' rx='3' fill='%23F5C842' stroke='%231F2430' stroke-width='2.5'/%3E %3Crect x='30' y='37' width='10' height='6' rx='3' fill='%23F5C842' stroke='%231F2430' stroke-width='2.5'/%3E %3C/svg%3E");
 }
 
 *{ box-sizing: border-box; }
@@ -65,7 +60,7 @@ body{
 
 /* ---------- Mascot helper ----------
    Add class="perch bot-bolt" (or bot-visor / bot-gear) to any box
-   and a little robot sits on its top edge. */
+   and a little robot sits on its top edge. Drawings live in bots/. */
 .perch{ position: relative; }
 .perch::before{
   content: "";
@@ -74,7 +69,9 @@ body{
   right: 22px;
   width: 44px;
   height: 40px;
-  background: var(--bot) no-repeat center / contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
   pointer-events: none;
   transition: transform .25s cubic-bezier(.3,1.6,.5,1);
   transform-origin: bottom center;
@@ -82,9 +79,9 @@ body{
 .perch.left::before{ right: auto; left: 22px; }
 .perch:hover::before{ transform: translateY(-3px) rotate(-6deg); }
 
-.bot-bolt { --bot: var(--bot-bolt); }
-.bot-visor{ --bot: var(--bot-visor); }
-.bot-gear { --bot: var(--bot-gear); }
+.bot-bolt::before { background-image: url(bots/bolt.svg); }
+.bot-visor::before{ background-image: url(bots/visor.svg); }
+.bot-gear::before { background-image: url(bots/gear.svg); }
 
 /* ---------- Navigation ---------- */
 .site-nav{
@@ -116,15 +113,17 @@ body{
   width: 30px;
   height: 27px;
   margin-left: -15px;
-  background: var(--bot) no-repeat center / contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
   opacity: 0;
   transform: translateY(10px) scale(.6);
   transition: opacity .2s ease, transform .25s cubic-bezier(.3,1.6,.5,1);
   pointer-events: none;
 }
-.site-nav a:nth-child(3n+1){ --bot: var(--bot-bolt); }
-.site-nav a:nth-child(3n+2){ --bot: var(--bot-visor); }
-.site-nav a:nth-child(3n+3){ --bot: var(--bot-gear); }
+.site-nav a:nth-child(3n+1)::before{ background-image: url(bots/bolt.svg); }
+.site-nav a:nth-child(3n+2)::before{ background-image: url(bots/visor.svg); }
+.site-nav a:nth-child(3n+3)::before{ background-image: url(bots/gear.svg); }
 .site-nav a:hover{
   background: var(--red);
   color: #fff;
@@ -306,7 +305,7 @@ h1{
   bottom: calc(100% - 3px);
   width: 30px;
   height: 27px;
-  background: var(--bot-gear) no-repeat center / contain;
+  background: url(bots/gear.svg) no-repeat center / contain;
   opacity: 0;
   transform: translateY(8px);
   transition: opacity .2s ease, transform .25s cubic-bezier(.3,1.6,.5,1);
