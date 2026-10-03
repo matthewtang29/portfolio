@@ -3,36 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>matthewtang</title>
+<title>Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bonus.css">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="console">
-  <nav class="site-nav">
-    <a href="projects.html">Projects</a>
-    <a href="bonus.html">Bonus</a>
-    <a href="contact.html">Contact</a>
-    <a href="https://github.com/matthewtang29" target="_blank" rel="noopener">GITHUB</a>
+<div class="page">
+  <nav class="side-nav" aria-label="Pages">
+    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
+    <a href="articles.html"><span class="num">//02</span>Articles</a>
+    <a href="projects.html"><span class="num">//03</span>Projects</a>
   </nav>
-
-  <header>
-    <div>
-      <h1>Welcome to my website!</h1>
-      <p class="subtitle">This is a simple website created by Matthew Tang.</p>
+  <main>
+    <div class="topbar">
+      <ul class="links">
+        <li><a class="link-btn github" href="https://github.com/matthewtang29" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i><span class="tip">GitHub</span></a></li>
+        <li><a class="link-btn linkedin" href="https://www.linkedin.com/in/matthewtang29" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i><span class="tip">LinkedIn</span></a></li>
+        <li><a class="link-btn resume" href="#" aria-label="Resume"><i class="fa-solid fa-file-lines"></i><span class="tip">Resume</span></a></li>
+        <li><a class="link-btn instagram" href="https://instagram.com/matthew_tang29" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i><span class="tip">Instagram</span></a></li>
+        <li><a class="link-btn email" href="mailto:ms2tang@uwaterloo.ca" aria-label="Email"><i class="fa-solid fa-envelope"></i><span class="tip">Email</span></a></li>
+      </ul>
     </div>
-  </header>
 
-  <div class="content-panel perch bot-bolt">
-    <img src="2.jpg" alt="Matthew Tang" class="profile-img">
-    <p class="body-text">This is a simple website created by Matthew Tang. Feel free to explore the projects and contact me for any inquiries.</p>
-  </div>
+    <section class="hero">
+      <h1>Hi there,<br>I'm Matthew :)</h1>
+      <p class="tagline">Electrical Engineering 1A <b>@ UWaterloo</b></p>
+      <p class="blurb">Just tryna build cool things that solve issues — big or small.</p>
+    </section>
 
+    <h2>Featured <span class="accent">Projects</span></h2>
+    <div class="featured">
+      <a class="card feature perch bot-visor" href="projects.html#pomodoro">
+        <img class="card-img" src="images/desk-robot.jpg" alt="Inside the green 3D-printed desk robot with an Arduino and jumper wires">
+        <div class="caption"><strong>Desk Robot</strong><span class="arrow">→</span></div>
+      </a>
+      <a class="card feature perch bot-gear left" href="projects.html#pomegranate">
+        <img class="card-img" src="images/study-tracker.jpg" alt="Pomegranate study tracker app showing a focus timer">
+        <div class="caption"><strong>Study Tracker</strong><span class="arrow">→</span></div>
+      </a>
+    </div>
+
+    <p class="drag-hint"><span>←</span>drag me<span>→</span></p>
+    <div class="hobbies" aria-label="Things I like">
+      <div class="hobby-track">
+        <div class="hobby" tabindex="0"><img src="images/hobbies/climbing.svg" alt="" draggable="false"><div class="label"><small>Fav sport</small><span>Rock climbing</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/brand.svg" alt="" draggable="false"><div class="label"><small>Fav brand</small><span>Stüssy</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/laptop.svg" alt="" draggable="false"><div class="label"><small>Laptop</small><span>ThinkPad</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/backpack.svg" alt="" draggable="false"><div class="label"><small>Backpack</small><span>Herschel Little America (black)</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/food.svg" alt="" draggable="false"><div class="label"><small>Fav food</small><span>Bún Thịt Nướng Chả Giò</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/song.svg" alt="" draggable="false"><div class="label"><small>Fav song</small><span>Emily's Song — Daniel Caesar</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/drink.svg" alt="" draggable="false"><div class="label"><small>Fav drink</small><span>CoCo Three Guys</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/car.svg" alt="" draggable="false"><div class="label"><small>Dream car</small><span>Mercedes CLE 300</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/album.svg" alt="" draggable="false"><div class="label"><small>Fav album</small><span>Gemini Rights — Steve Lacy</span></div></div>
+        <div class="hobby" tabindex="0"><img src="images/hobbies/shoes.svg" alt="" draggable="false"><div class="label"><small>Daily shoes</small><span>Hello Kitty Crocs</span></div></div>
+      </div>
+    </div>
+  </main>
   <footer>
-    Use the links above to explore projects, play the bonus game, or get in touch.
+    <span>© 2026 Matthew Tang</span>
+    <span>Built by hand, guarded by robots.</span>
   </footer>
 </div>
+<script src="site.js"></script>
 </body>
 </html>

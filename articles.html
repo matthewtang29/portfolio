@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projects — Matthew Tang</title>
+<title>Articles — Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,8 +14,8 @@
 <div class="page">
   <nav class="side-nav" aria-label="Pages">
     <a href="index.html"><span class="num">//01</span>Home</a>
-    <a href="articles.html"><span class="num">//02</span>Articles</a>
-    <a href="projects.html" aria-current="page"><span class="num">//03</span>Projects</a>
+    <a href="articles.html" aria-current="page"><span class="num">//02</span>Articles</a>
+    <a href="projects.html"><span class="num">//03</span>Projects</a>
   </nav>
   <main>
     <div class="topbar">
@@ -29,30 +29,30 @@
     </div>
 
     <section class="hero">
-      <h1>Projects</h1>
-      <p class="blurb">Things I've built. Click through for the code.</p>
+      <h1>Articles</h1>
+      <p class="blurb">Write-ups on how I built things — what worked, what broke, and what I'd do differently.</p>
     </section>
 
-    <div class="project-grid">
-      <article class="card project perch bot-bolt" id="pomodoro">
-        <img class="card-img" src="images/desk-robot.jpg" alt="Inside the green 3D-printed Pomodoro timer with an Arduino and jumper wires">
+    <div class="article-list">
+      <article class="card article-row perch bot-bolt">
+        <img class="card-img" src="images/desk-robot.jpg" alt="Inside the green 3D-printed desk robot">
         <div class="body">
-          <div>
-            <h3>Pomodoro Timer</h3>
-            <p>A desk robot that times my study sessions and keeps me on track.</p>
+          <div class="top">
+            <span class="kicker">Desk Robot</span>
+            <a class="btn" href="article-desk-robot.html">View →</a>
           </div>
-          <a class="btn" href="https://github.com/matthewtang29/pomodoro" target="_blank" rel="noopener">View project ↗</a>
+          <p>How I created a personal desk robot that times my study sessions and keeps me on track.</p>
         </div>
       </article>
 
-      <article class="card project perch bot-gear left" id="pomegranate">
-        <img class="card-img" src="images/study-tracker.jpg" alt="Pomegranate app showing a focus timer">
+      <article class="card article-row perch bot-visor">
+        <img class="card-img" src="images/study-tracker.jpg" alt="Pomegranate study tracker app">
         <div class="body">
-          <div>
-            <h3>Pomegranate</h3>
-            <p>An app that plans your day, times your focus, and tracks how it went.</p>
+          <div class="top">
+            <span class="kicker">Study Tracker</span>
+            <a class="btn" href="article-study-app.html">View →</a>
           </div>
-          <a class="btn" href="https://github.com/matthewtang29/pomegranate" target="_blank" rel="noopener">View project ↗</a>
+          <p>How I made my own app that acts as a study timer, to-do list and journal all in one, while analyzing my productivity and keeping track of how my days went.</p>
         </div>
       </article>
     </div>
