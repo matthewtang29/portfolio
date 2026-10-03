@@ -22,6 +22,70 @@ document.querySelectorAll(".link-btn.resume").forEach(function (btn) {
 });
 
 
+/* ---------- Email button: copy address to clipboard ---------- */
+document.querySelectorAll(".link-btn.email").forEach(function (btn) {
+  const tip = btn.querySelector(".tip");
+  const email = btn.dataset.email;
+  let timer = null;
+
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function show(text) {
+    tip.textContent = text;
+    btn.classList.add("copied");
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      btn.classList.remove("copied");
+      tip.textContent = email;
+    }, 1800);
+  }
+
+  btn.addEventListener("click", function () {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(email)
+        .then(function () { show("Copied to clipboard!"); })
+        .catch(function () { show(fallbackCopy(email) ? "Copied to clipboard!" : email); });
+    } else {
+      show(fallbackCopy(email) ? "Copied to clipboard!" : email);
+    }
+  });
+});
+
+
+/* ---------- Hobby photos ----------
+   Each sticker starts as a drawing. If a real photo with the same
+   name exists in images/hobbies/ (.png, .jpg, .jpeg or .webp),
+   it's swapped in automatically. e.g. images/hobbies/climbing.png */
+document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
+  const base = img.dataset.photo;
+  const exts = ["png", "jpg", "jpeg", "webp"];
+  (function tryNext(i) {
+    if (i >= exts.length) return;
+    const probe = new Image();
+    probe.onload = function () {
+      document.querySelectorAll('.hobby img[data-photo="' + base + '"]').forEach(function (el) {
+        el.src = probe.src;
+        el.classList.add("is-photo");
+      });
+    };
+    probe.onerror = function () { tryNext(i + 1); };
+    probe.src = base + "." + exts[i];
+  })(0);
+});
+
+
 /* ---------- Hobby slider ("drag me") ----------
    Slides on its own, stops while you hover a sticker,
    and can be dragged left/right with mouse or finger. */

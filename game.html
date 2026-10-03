@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Building my study app — Matthew Tang</title>
+<title>Minefield — Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,9 +14,9 @@
 <div class="page">
   <nav class="side-nav" aria-label="Pages">
     <a href="index.html"><span class="num">//01</span>Home</a>
-    <a href="articles.html" aria-current="page"><span class="num">//02</span>Articles</a>
+    <a href="articles.html"><span class="num">//02</span>Articles</a>
     <a href="projects.html"><span class="num">//03</span>Projects</a>
-    <a href="game.html"><span class="num">//04</span>Game</a>
+    <a href="game.html" aria-current="page"><span class="num">//04</span>Game</a>
   </nav>
   <main>
     <div class="topbar">
@@ -28,15 +28,53 @@
         <li><button class="link-btn email" type="button" data-email="ms2tang@uwaterloo.ca" aria-label="Copy email address ms2tang@uwaterloo.ca"><i class="fa-solid fa-envelope"></i><span class="tip">ms2tang@uwaterloo.ca</span></button></li>
       </ul>
     </div>
-
-    <section class="hero">
-      <h1>Building my study app</h1>
-      <p class="tagline">Article <b>· coming soon</b></p>
+    <section class="hero game-hero">
+      <div>
+        <h1>Minefield</h1>
+        <p class="blurb">Clear every safe cell without hitting a mine.</p>
+      </div>
+      <div class="status-chip">
+        <span class="led" id="led"></span>
+        <span id="ledText">Standby</span>
+      </div>
     </section>
 
-    <div class="card coming-soon perch bot-gear">
-      <p>I'm still writing this one up. Check back soon!</p>
-      <a class="btn ghost" href="articles.html">← Back to articles</a>
+    <div class="game">
+      <div class="difficulty-row" id="difficultyRow" role="group" aria-label="Grid size">
+        <button class="diff-btn" data-diff="beginner" aria-pressed="true">
+          <span class="name">Beginner</span>
+          <span class="meta">9×9 grid, 10 mines</span>
+        </button>
+        <button class="diff-btn" data-diff="intermediate" aria-pressed="false">
+          <span class="name">Intermediate</span>
+          <span class="meta">16×16 grid, 40 mines</span>
+        </button>
+        <button class="diff-btn" data-diff="expert" aria-pressed="false">
+          <span class="name">Expert</span>
+          <span class="meta">30×16 grid, 99 mines</span>
+        </button>
+      </div>
+
+      <div class="readout-row">
+        <div class="lcd-wrap">
+          <div class="lcd" id="mineCounter">010</div>
+          <div class="lcd-label">Mines left</div>
+        </div>
+        <button class="reset-btn perch bot-bolt" id="resetBtn">New game</button>
+        <div class="lcd-wrap">
+          <div class="lcd" id="timer">000</div>
+          <div class="lcd-label">Seconds</div>
+        </div>
+      </div>
+
+      <div class="perch bot-visor left">
+        <div class="board-scroll">
+          <div class="grid" id="grid"></div>
+        </div>
+      </div>
+
+      <p class="status-line" id="statusLine">Ready. Click any cell to begin.</p>
+      <p class="game-help">Click or tap a cell to clear it. Right-click, or press and hold on touch, to flag a suspected mine. With a cell focused, press F to flag it instead.</p>
     </div>
   </main>
   <footer>
@@ -45,5 +83,6 @@
   </footer>
 </div>
 <script src="site.js"></script>
+<script src="bonus.js"></script>
 </body>
 </html>
