@@ -9,6 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
+<script>
+  // apply saved light/dark choice before the page paints
+  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
 </head>
 <body>
 <div class="page">
@@ -16,10 +20,11 @@
     <a href="index.html"><span class="num">//01</span>Home</a>
     <a href="articles.html" aria-current="page"><span class="num">//02</span>Articles</a>
     <a href="projects.html"><span class="num">//03</span>Projects</a>
-    <a href="game.html"><span class="num">//04</span>Game</a>
+    <a href="game.html"><span class="num">//04</span>Minefield</a>
   </nav>
   <main>
     <div class="topbar">
+      <button class="link-btn theme-toggle" type="button" aria-label="Switch light/dark mode"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i><span class="tip">Dark mode</span></button>
       <ul class="links">
         <li><a class="link-btn github" href="https://github.com/matthewtang29" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i><span class="tip">GitHub</span></a></li>
         <li><a class="link-btn linkedin" href="https://www.linkedin.com/in/matthewtang29" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i><span class="tip">LinkedIn</span></a></li>

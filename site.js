@@ -165,3 +165,31 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
   measure();
   requestAnimationFrame(frame);
 })();
+
+
+/* ---------- Light / dark mode toggle ---------- */
+(function () {
+  const root = document.documentElement;
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function current() {
+    return root.dataset.theme || (media.matches ? "dark" : "light");
+  }
+  function label() {
+    document.querySelectorAll(".theme-toggle .tip").forEach(function (tip) {
+      tip.textContent = current() === "dark" ? "Light mode" : "Dark mode";
+    });
+  }
+  // make sure the icon matches the device setting on first visit
+  root.dataset.theme = current();
+  label();
+
+  document.querySelectorAll(".theme-toggle").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const next = current() === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      try { localStorage.setItem("theme", next); } catch (e) {}
+      label();
+    });
+  });
+})();
