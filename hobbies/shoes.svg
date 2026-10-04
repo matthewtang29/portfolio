@@ -1,8 +1,0 @@
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>
-<path d='M10 74 C10 54 24 42 44 40 C58 38 70 44 78 54 L102 62 C112 66 114 74 112 82 L110 88 L14 88 C10 86 10 80 10 74 Z' fill='#F7A8C4' stroke='#1F2430' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/>
-<path d='M30 46 C24 56 24 66 30 72' fill='none' stroke='#1F2430' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/>
-<path d='M10 84 L112 84 L110 92 L14 92 Z' fill='#E77BA3' stroke='#1F2430' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/>
-<circle cx='44' cy='52' r='3' fill='#1F2430'/><circle cx='56' cy='50' r='3' fill='#1F2430'/><circle cx='66' cy='56' r='3' fill='#1F2430'/>
-<circle cx='50' cy='62' r='3' fill='#1F2430'/><circle cx='62' cy='66' r='3' fill='#1F2430'/><circle cx='80' cy='64' r='3' fill='#1F2430'/>
-<path d='M90 66 l3 6 l6 1 l-5 4 l2 6 l-6 -3 l-6 3 l2 -6 l-5 -4 l6 -1 z' fill='#F5C842' stroke='#1F2430' stroke-width='2' stroke-linejoin='round'/>
-</svg>
