@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Building my desk robot — Matthew Tang</title>
+<title>Pomodoro Timer — Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=8">
 <script>
   // apply saved light/dark choice before the page paints
   try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -35,14 +35,121 @@
     </div>
 
     <section class="hero">
-      <h1>Building my desk robot</h1>
-      <p class="tagline">Article <b>· coming soon</b></p>
+      <h1>How I built my own Pomodoro timer</h1>
+      <p class="tagline">Article <b>· Oct 4, 2026</b></p>
+      <p class="blurb">A standalone study timer built on an Arduino, from the circuit and code to the case and the app that controls it.</p>
     </section>
 
-    <div class="card coming-soon perch bot-gear">
-      <p>I'm still writing this one up. Check back soon!</p>
-      <a class="btn ghost" href="articles.html">← Back to articles</a>
-    </div>
+    <article class="article">
+      <section class="card article-section perch bot-gear">
+        <h2>The <span class="accent">idea</span></h2>
+        <p>The Pomodoro technique is simple: focus for 25 minutes, take a 5-minute break, repeat. The problem was that every time I used a timer on my phone, I'd pick up my phone and end up on something else. So I decided to build a timer that does one thing and nothing else.</p>
+        <p>My requirements were:</p>
+        <ul>
+          <li>an auto mode (the classic 25/5) and a custom mode where I can pick the focus length, break length and number of cycles</li>
+          <li>the ability to pause, resume or exit a session at any time</li>
+          <li>a buzzer to tell me when to switch, and a way to mute it</li>
+          <li>a case that actually looks good on my desk</li>
+        </ul>
+      </section>
+
+      <section class="card article-section perch left bot-bolt">
+        <h2>The <span class="accent">circuit</span></h2>
+        <p>The timer runs on an Arduino Uno R3. I first built the full circuit in Tinkercad.</p>
+        <!-- TODO: Tinkercad circuit image -->
+        <p>The parts are pretty minimal:</p>
+        <ul>
+          <li><b>16x2 LCD:</b> shows the menus and the countdown. I ran it in 4-bit mode (RS → 12, E → 11, D4–D7 → 5, 4, 3, 2) to save pins. The potentiometer sets the screen's contrast, and a 220 Ω resistor limits current to the backlight.</li>
+          <li><b>Buttons:</b> left (pin 9) and right (pin 8) move through the menus, and select (pin 10) confirms, or pauses while a timer is running. I later added a fourth button on pin 6 for mute.</li>
+          <li><b>Piezo buzzer (pin 7):</b> plays the alerts.</li>
+        </ul>
+        <p>One nice detail is that the buttons don't need any resistors. Each one just connects its pin to ground, and I turn on the Arduino's internal pull-up resistors with <code>INPUT_PULLUP</code>. A pin reads <code>HIGH</code> normally and <code>LOW</code> when the button is pressed.</p>
+      </section>
+
+      <section class="card article-section perch bot-visor">
+        <h2>The <span class="accent">code</span></h2>
+        <h3>The problem with delay()</h3>
+        <p>My first version used <code>delay()</code> to count down. It worked, but <code>delay()</code> freezes the whole program, so pressing a button in the middle of a countdown did nothing. That made pausing impossible.</p>
+        <p>The fix was to rewrite the timer as a state machine. Instead of waiting, the program is always in one state (<code>MAIN_MENU</code>, <code>FOCUS</code>, <code>REST</code>, <code>PAUSED</code>, <code>SUMMARY</code>, and so on). Every time it loops, it checks the clock with <code>millis()</code> and decides whether it's time to move to the next state. Since nothing ever blocks, the buttons are checked thousands of times a second.</p>
+        <p>The main loop ended up being tiny:</p>
+<pre><code>void loop(){
+  readSerial();
+  int btn = readButtons();
+  if (btn &gt;= 0) handleButton(btn);
+  update();
+  draw();
+}</code></pre>
+        <p>And <code>update()</code> just checks whether the current phase has run out:</p>
+<pre><code>switch (state){
+  case FOCUS:
+    if (msLeft() == 0) focusFinished();
+    break;
+  case REST:
+    if (msLeft() == 0) restFinished();
+    break;
+  ...
+}</code></pre>
+        <p>Pausing is now easy. When I pause, I save how many milliseconds were left. When I resume, I set a new end time from that saved value, and the countdown picks up exactly where it stopped.</p>
+
+        <h3>Small details</h3>
+        <ul>
+          <li><b>Debouncing:</b> a button "bounces" when pressed, and one press can register as several. I only accept a change if the button has held steady for 30 ms.</li>
+          <li><b>Remembering mute:</b> the mute setting is saved to the Arduino's EEPROM, a small amount of memory that keeps its contents with the power off. If I mute it, it stays muted after a restart.</li>
+        </ul>
+      </section>
+
+      <section class="card article-section perch left bot-gear">
+        <h2>Controlling it from my <span class="accent">computer</span></h2>
+        <p>Once the timer worked on its own, I wanted to control it from my laptop. The Arduino already talks over its USB cable, so I designed a simple text protocol at 115200 baud:</p>
+        <ul>
+          <li>my computer sends commands like <code>START 25 5 4</code> (25 min focus, 5 min break, 4 cycles), <code>PAUSE</code> or <code>MUTE</code></li>
+          <li>the timer replies every second with a <code>STATE</code> line containing its current state and time left</li>
+          <li>it sends <code>EVENT</code> lines when a block finishes</li>
+        </ul>
+        <p>On the computer side, I built a web app called <a href="article-study-app.html">Pomegranate</a> that connects using the browser's Web Serial API, with no drivers or installs needed. Because the app's display is driven by the timer's own status messages, the LCD and the app always stay in sync.</p>
+        <p>Pomegranate turned into a bit of a study hub. It has:</p>
+        <ul>
+          <li>a task list where I can rate difficulty</li>
+          <li>a calendar</li>
+          <li>a daily journal</li>
+          <li>an analytics tab that gives each session and each day a productivity score</li>
+        </ul>
+        <p>It's installable as an app and syncs between my laptop and phone with Firebase. It also has a built-in timer for when the device isn't plugged in.</p>
+      </section>
+
+      <section class="card article-section perch bot-bolt">
+        <h2>The <span class="accent">case</span></h2>
+        <p>I designed the case in Autodesk Fusion and 3D printed it.</p>
+        <!-- TODO: Fusion screenshots -->
+        <p>It's made of two main pieces:</p>
+        <ul>
+          <li><b>Base (green):</b> holds the Arduino and breadboard, with a window for the LCD and a cutout for the USB cable.</li>
+          <li><b>Lid:</b> a swirled top capped with a little red pomegranate, sitting on a ring that locks onto the base.</li>
+        </ul>
+        <p>The two halves are held together with magnets pressed into the pockets around the rim, so I can pop the lid off to get to the electronics without unscrewing anything. I used section views to make sure the wall thicknesses and magnet pockets lined up before printing.</p>
+      </section>
+
+      <section class="card article-section perch left bot-visor">
+        <h2>What's <span class="accent">next</span></h2>
+        <p>The first version works great, but it's tied to a USB cable and it's pretty big. The next version is a small, wireless desk robot about the size of an action figure:</p>
+        <ul>
+          <li><b>New brain:</b> an ESP32-S3 board with a round 1.28" touchscreen. The screen becomes the robot's face: it can show eyes, a countdown ring and text, and touch replaces the buttons. It also has a motion sensor, so I can do things like flip it face-down to start focusing.</li>
+          <li><b>Bluetooth:</b> the ESP32 talks to Pomegranate over Bluetooth Low Energy, using the same text protocol as the USB version, so the app barely needs to change.</li>
+          <li><b>Battery power:</b> a small LiPo, charged over USB-C, plus a vibration motor for silent alerts.</li>
+          <li><b>Custom PCB:</b> once everything works on a breadboard, I'm planning to design a small board in Altium for the buzzer, motor driver, power switch and buttons. It'll be shaped to fit inside the body and replace the mess of wires.</li>
+          <li><b>A more compact case:</b> designed around the round screen and the new board.</li>
+        </ul>
+      </section>
+
+      <section class="card article-section perch bot-gear">
+        <h2><span class="accent">Conclusion</span></h2>
+        <p>This was the first project where I took something from a breadboard all the way to a finished device on my desk, and then kept going with the app. The biggest lesson was the switch from <code>delay()</code> to a state machine. It's a small change in code, but it's the difference between a timer that just counts down and one you can actually interact with.</p>
+      </section>
+
+      <div>
+        <a class="btn ghost" href="articles.html">← Back to articles</a>
+      </div>
+    </article>
   </main>
   <footer>
     <span>© 2026 Matthew Tang</span>

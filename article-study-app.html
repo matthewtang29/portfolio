@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Building my study app — Matthew Tang</title>
+<title>Pomegranate — Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=8">
 <script>
   // apply saved light/dark choice before the page paints
   try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -35,14 +35,119 @@
     </div>
 
     <section class="hero">
-      <h1>Building my study app</h1>
-      <p class="tagline">Article <b>· coming soon</b></p>
+      <h1>Pomegranate</h1>
+      <p class="tagline">Article <b>· study planner + Pomodoro timer</b></p>
+      <p class="blurb">A study planner and Pomodoro timer web app. It controls my custom Arduino Pomodoro timer over USB, but also works on its own with a built-in timer, on computers and phones. It also plans tasks, keeps a daily journal, and tracks study habits with a productivity score.</p>
     </section>
 
-    <div class="card coming-soon perch bot-gear">
-      <p>I'm still writing this one up. Check back soon!</p>
-      <a class="btn ghost" href="articles.html">← Back to articles</a>
-    </div>
+    <article class="article">
+      <section class="card article-section perch bot-gear">
+        <h2>Features</h2>
+        <ul>
+          <li><b>Timer tab:</b> set up and control sessions over USB, with a live countdown synced to the device</li>
+          <li><b>Built-in timer:</b> no device plugged in? Sessions run in the app itself (also on phones), with the same tracking, scores, and notifications</li>
+          <li><b>Synced sessions:</b> start a session on one device and it runs on all your signed-in devices; pause, resume or exit from any of them (also works for the physical timer)</li>
+          <li><b>Timer alerts:</b> a notification on every device when a focus block, break, or session ends, even when the app is closed (via a small cloud function), plus an option to keep the screen awake during sessions</li>
+          <li><b>Tasks tab:</b> a Todoist-style task list with natural-language quick add (<code>Lab report fri p1 d4 #ECE140</code>), priorities, difficulty ratings (1–5), projects, and Today / Upcoming / All / Done views</li>
+          <li><b>Link tasks to sessions:</b> pick what you're working on and focus time is credited to that task</li>
+          <li><b>Calendar tab:</b> month view of tasks due, each day's productivity score, and your day rating (switch between showing both, productivity, or day rating)</li>
+          <li><b>Journal tab:</b> write about your day and rate it out of 10 (1–3 red, 4–5 orange, 6–8 yellow, 9–10 green), with a 14-day overview; ratings color the calendar and are kept separate from the productivity score</li>
+          <li><b>Analytics tab:</b> daily productivity score, desk / focus / break time compared with yesterday and last week, and up to 30 days of history</li>
+          <li><b>Installable app</b> that works offline and reconnects to the timer automatically</li>
+          <li><b>Themes:</b> a playful robot-lab look matching my website (chunky type, outlined cards, robot mascots), in system / light / dark, plus 8 accent colors or any custom color</li>
+          <li><b>Cloud sync:</b> sign in with Google to sync tasks, journal, study history and settings between computer and phone (Firebase)</li>
+        </ul>
+      </section>
+
+      <section class="card article-section perch left bot-bolt">
+        <h2>Using the app</h2>
+        <p>To use the physical timer, open the app in Chrome or Edge on a computer, plug in the timer, and press Connect. The app uses the Web Serial API to talk to the Arduino over its USB cable, with no drivers needed. Without the timer (or on a phone), sessions run on the built-in timer.</p>
+        <p>Install it as an app: click the install icon at the right end of the address bar (or ⬇ Install as an app under the timer). It then opens in its own window with a Start menu / taskbar icon, works offline, and reconnects to the timer on launch.</p>
+        <p>All data (tasks, journal, study history, settings) is stored in the browser first, so the app works offline. Sign in from ⚙ Settings to sync it across devices, or use Back up / Restore on the Analytics tab to move it manually.</p>
+      </section>
+
+      <section class="card article-section perch bot-visor">
+        <h2>Productivity <span class="accent">score</span></h2>
+        <h3>Session score (0–100)</h3>
+        <p>For each timer session:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Part</th><th>Weight</th><th>Measures</th></tr></thead>
+            <tbody>
+              <tr><td>Completion</td><td class="num">45%</td><td>Finished all cycles or checked off a task during the session; otherwise the share of planned focus done</td></tr>
+              <tr><td>Efficiency</td><td class="num">35%</td><td>Focus share of desk time, relative to what the focus/break plan allows (long pauses lower it)</td></tr>
+              <tr><td>Intensity</td><td class="num">20%</td><td>Focus-time-weighted difficulty of the linked task(s) ÷ 5</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Daily score (0–100)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Part</th><th>Weight</th><th>Measures</th></tr></thead>
+            <tbody>
+              <tr><td>Focus time</td><td class="num">40%</td><td>Focus minutes vs. a daily goal (adjustable)</td></tr>
+              <tr><td>Tasks done</td><td class="num">30%</td><td>Difficulty-weighted share of tasks due that day that got done</td></tr>
+              <tr><td>Session quality</td><td class="num">30%</td><td>Focus-weighted average of that day's session scores</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Parts with nothing to measure are left out and the rest are rescaled.</p>
+      </section>
+
+      <section class="card article-section perch left bot-gear">
+        <h2>How it works</h2>
+        <p>The app talks to the timer with a simple text protocol and records time from the timer's once-a-second <code>STATE</code> messages. The built-in timer (<code>localtimer.js</code>) is a software copy of the Arduino timer that speaks the same protocol, so the rest of the app works the same with or without the device.</p>
+
+        <h3>Cloud sync</h3>
+        <p>Sync uses Firebase Authentication (Google sign-in) and Cloud Firestore. Tasks and journal entries are stored one per document and the newest change wins; deletions sync as markers. Study history is stored per device and added together for display, so two devices studying on the same day never overwrite each other.</p>
+
+        <h3>Synced sessions</h3>
+        <p>The running session is one shared document holding the timer's state as absolute times (when this phase ends), so every device counts down on its own clock without constant updates. Devices only write when you start, pause, resume, exit or continue, and the newest change wins. Only the device that started a session records it in Analytics. For the physical timer, the computer it's plugged into shares every state change, and pause/exit from other devices is passed to that computer.</p>
+
+        <h3>Closed-app alerts</h3>
+        <p>Each device registers for Web Push. When the shared session changes, a Firebase cloud function works out every upcoming focus/break ending and schedules a Cloud Task for each one, which sends the alert at that exact time unless the session has changed since. This part needs Firebase's pay-as-you-go plan, but stays within the free allowances.</p>
+        <p>Firestore security rules make sure only the signed-in user can read or write their own data.</p>
+      </section>
+
+      <section class="card article-section perch bot-bolt">
+        <h2>Project <span class="accent">structure</span></h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>File</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>index.html</code>, <code>style.css</code></td><td>App layout and styles</td></tr>
+              <tr><td><code>app.js</code></td><td>USB connection and timer controls</td></tr>
+              <tr><td><code>localtimer.js</code></td><td>Built-in timer (same protocol as the Arduino)</td></tr>
+              <tr><td><code>notify.js</code></td><td>Timer-finished notifications and keep-awake</td></tr>
+              <tr><td><code>analytics.js</code></td><td>Study time tracking and Analytics tab</td></tr>
+              <tr><td><code>score.js</code></td><td>Session and daily productivity scores</td></tr>
+              <tr><td><code>tasks.js</code></td><td>Tasks tab and quick-add parser</td></tr>
+              <tr><td><code>calendar.js</code></td><td>Calendar tab</td></tr>
+              <tr><td><code>journal.js</code></td><td>Journal tab (day ratings)</td></tr>
+              <tr><td><code>sync.js</code></td><td>Google sign-in and cloud sync</td></tr>
+              <tr><td><code>livesync.js</code></td><td>Shared timer sessions across devices</td></tr>
+              <tr><td><code>push.js</code></td><td>Alerts while the app is closed (Web Push)</td></tr>
+              <tr><td><code>theme.js</code></td><td>Theme settings</td></tr>
+              <tr><td><code>main.js</code></td><td>Tabs, install-as-app, start-up</td></tr>
+              <tr><td><code>manifest.webmanifest</code>, <code>sw.js</code></td><td>Installable app (PWA) setup</td></tr>
+              <tr><td><code>icons/</code></td><td>App icons and robot mascots</td></tr>
+              <tr><td><code>fonts/</code></td><td>Bungee and Nunito (SIL Open Font License), stored locally so the app works offline</td></tr>
+              <tr><td><code>cloud/</code></td><td>Firebase cloud function that sends timer alerts</td></tr>
+              <tr><td><code>firmware/</code></td><td>Arduino timer code</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card article-section perch left bot-visor">
+        <h2>Wrapping <span class="accent">up</span></h2>
+        <p>I built Pomegranate because I was struggling to keep my tasks, thoughts and studying organized, so I made one app that handles all of it.</p>
+      </section>
+
+      <div>
+        <a class="btn ghost" href="articles.html">← Back to articles</a>
+      </div>
+    </article>
   </main>
   <footer>
     <span>© 2026 Matthew Tang</span>
