@@ -533,6 +533,30 @@ h2 .accent{ color: var(--red); }
   font-size: 14px;
   line-height: 1.55;
 }
+.article-figure{ margin: 6px 0 20px; }
+.article-figure > img,
+.model-grid img{
+  width: 100%;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: #fff;
+}
+.model-grid{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.model-grid img{ aspect-ratio: 4 / 3; object-fit: contain; background: #2B303B; }
+.article-figure figcaption{
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+  text-align: center;
+}
+@media (max-width: 600px){
+  .model-grid{ grid-template-columns: 1fr 1fr; }
+}
 .article-section a{ color: var(--red); font-weight: 800; }
 .table-wrap{
   overflow-x: auto;

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=11">
 <script>
   // apply saved light/dark choice before the page paints
   try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
@@ -35,7 +35,7 @@
     </div>
 
     <section class="hero">
-      <h1>Pomodoro timer</h1>
+      <h1>Pomodoro Timer</h1>
       <p class="tagline">Article <b>· Oct 4, 2026</b></p>
       <p class="blurb">How I built a standalone study timer built on an Arduino, from the circuit and code to the case and the app that controls it.</p>
     </section>
@@ -56,7 +56,10 @@
       <section class="card article-section perch left bot-bolt">
         <h2>The <span class="accent">circuit</span></h2>
         <p>The timer runs on an Arduino Uno R3. I first built the full circuit in Tinkercad.</p>
-        <!-- TODO: Tinkercad circuit image -->
+        <figure class="article-figure">
+          <img src="images/pomodoro/circuit.png" alt="Tinkercad circuit: Arduino Uno wired to a 16x2 LCD, potentiometer, piezo buzzer and three buttons on a breadboard">
+          <figcaption>The full circuit in Tinkercad</figcaption>
+        </figure>
         <p>The parts are pretty minimal:</p>
         <ul>
           <li><b>16x2 LCD:</b> shows the menus and the countdown. I ran it in 4-bit mode (RS → 12, E → 11, D4–D7 → 5, 4, 3, 2) to save pins. The potentiometer sets the screen's contrast, and a 220 Ω resistor limits current to the backlight.</li>
@@ -120,7 +123,15 @@
       <section class="card article-section perch bot-bolt">
         <h2>The <span class="accent">case</span></h2>
         <p>I designed the case in Autodesk Fusion and 3D printed it.</p>
-        <!-- TODO: Fusion screenshots -->
+        <figure class="article-figure">
+          <div class="model-grid">
+            <img src="images/pomodoro/model1.png" alt="Green base with a window for the LCD and magnet holes around the rim">
+            <img src="images/pomodoro/model2.png" alt="Section view of the swirled lid">
+            <img src="images/pomodoro/model3.png" alt="Section view of the ring that locks onto the base">
+            <img src="images/pomodoro/model4.png" alt="Section view of the red pomegranate on top">
+          </div>
+          <figcaption>The base, lid, ring and pomegranate in Fusion</figcaption>
+        </figure>
         <p>It's made of two main pieces:</p>
         <ul>
           <li><b>Base (green):</b> holds the Arduino and breadboard, with a window for the LCD and a cutout for the USB cable.</li>
