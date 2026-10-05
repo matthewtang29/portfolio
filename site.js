@@ -4,7 +4,7 @@
    (e.g. "resume.pdf") and put its name between the quotes below.
    The Resume button on every page turns on automatically.
    ========================================================== */
-const RESUME_FILE = "";
+const RESUME_FILE = "resume.pdf";
 
 
 /* ---------- Resume button ---------- */
