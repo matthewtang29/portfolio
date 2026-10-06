@@ -8,10 +8,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=12">
 <script>
   // apply saved light/dark choice before the page paints
   try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  // pick up a //0X page transition from the last page (site.js finishes it; failsafe un-hides the page)
+  try { var p = sessionStorage.getItem("pt"); if (p) { document.documentElement.dataset.pt = p; setTimeout(function () { delete document.documentElement.dataset.pt; }, 3000); } } catch (e) {}
 </script>
 </head>
 <body>
@@ -68,6 +70,6 @@
     <span>Built by hand, guarded by robots.</span>
   </footer>
 </div>
-<script src="site.js?v=7"></script>
+<script src="site.js?v=8"></script>
 </body>
 </html>
