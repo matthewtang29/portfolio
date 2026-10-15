@@ -8,12 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=8">
 <script>
   // apply saved light/dark choice before the page paints
   try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-  // pick up a //0X page transition from the last page (site.js finishes it; failsafe un-hides the page)
-  try { var p = sessionStorage.getItem("pt"); if (p) { document.documentElement.dataset.pt = p; setTimeout(function () { delete document.documentElement.dataset.pt; }, 3000); } } catch (e) {}
 </script>
 </head>
 <body>
@@ -62,6 +60,17 @@
         </button>
       </div>
 
+      <div class="options-row" role="group" aria-label="Game options">
+        <button class="opt-btn" id="hexToggle" type="button" aria-pressed="false">
+          <span class="opt-switch" aria-hidden="true"></span>
+          <span class="opt-text"><span class="name">Hex grid</span><span class="meta">Six-sided cells, 6 neighbours each</span></span>
+        </button>
+        <button class="opt-btn" id="robotToggle" type="button" aria-pressed="false">
+          <span class="opt-switch" aria-hidden="true"></span>
+          <span class="opt-text"><span class="name">Robot helper</span><span class="meta">3 safe-cell hints per game</span></span>
+        </button>
+      </div>
+
       <div class="readout-row">
         <div class="lcd-wrap">
           <div class="lcd" id="mineCounter">010</div>
@@ -74,8 +83,14 @@
         </div>
       </div>
 
+      <div class="helper" id="helper" hidden>
+        <img class="helper-bot" id="helperBot" src="bots/bolt.svg" alt="">
+        <p class="bubble" id="helperBubble" aria-live="polite">Hi! I can point out 3 safe cells each game.</p>
+        <button class="btn" id="hintBtn" type="button">Hint <span id="hintCount">3</span></button>
+      </div>
+
       <div class="perch bot-visor left">
-        <div class="board-scroll">
+        <div class="board-scroll" id="boardScroll">
           <div class="grid" id="grid"></div>
         </div>
       </div>
@@ -89,7 +104,7 @@
     <span>Built by hand, guarded by robots.</span>
   </footer>
 </div>
-<script src="site.js?v=9"></script>
-<script src="bonus.js?v=6"></script>
+<script src="site.js?v=8"></script>
+<script src="bonus.js?v=8"></script>
 </body>
 </html>

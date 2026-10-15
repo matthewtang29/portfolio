@@ -8,12 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=8">
 <script>
   // apply saved light/dark choice before the page paints
   try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-  // pick up a //0X page transition from the last page (site.js finishes it; failsafe un-hides the page)
-  try { var p = sessionStorage.getItem("pt"); if (p) { document.documentElement.dataset.pt = p; setTimeout(function () { delete document.documentElement.dataset.pt; }, 3000); } } catch (e) {}
 </script>
 </head>
 <body>
@@ -38,19 +36,19 @@
 
     <section class="hero with-photo">
       <div class="hero-text">
-        <h1>Hi there,<br><span class="nowrap">I'm Matthew!</span></h1>
+        <h1>Hi there,<br>I'm Matthew!</h1>
         <p class="tagline">Electrical Engineering 1A <b>@ UWaterloo</b></p>
-        <p class="blurb">Just tryna build cool things that solve issues — big or small.</p>
+        <p class="blurb">lowkey just needa build stuff</p>
       </div>
       <div class="card me perch bot-bolt">
-        <img src="images/me.jpg?v=3" alt="Photo of Matthew Tang">
+        <img src="images/me.jpg" alt="Photo of Matthew Tang">
       </div>
     </section>
 
     <h2>Featured <span class="accent">Projects</span></h2>
     <div class="featured">
       <a class="card feature perch bot-visor" href="projects.html#pomodoro">
-        <img class="card-img" src="images/desk-robot.jpg?v=3" alt="Inside the green 3D-printed desk robot with an Arduino and jumper wires">
+        <img class="card-img" src="images/desk-robot.jpg" alt="Inside the green 3D-printed desk robot with an Arduino and jumper wires">
         <div class="caption"><strong>Desk Robot</strong><span class="arrow">→</span></div>
       </a>
       <a class="card feature perch bot-gear left" href="projects.html#pomegranate">
@@ -78,6 +76,6 @@
     <span>Built by hand, guarded by robots.</span>
   </footer>
 </div>
-<script src="site.js?v=9"></script>
+<script src="site.js?v=8"></script>
 </body>
 </html>

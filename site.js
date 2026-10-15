@@ -118,6 +118,16 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
     loopWidth = track.children[originals.length].offsetLeft - track.children[0].offsetLeft;
   }
 
+  // keep the loop running no matter how the page was opened
+  let running = false;
+  function start() {
+    measure();
+    last = performance.now();
+    if (running) return;
+    running = true;
+    requestAnimationFrame(frame);
+  }
+
   function wrap() {
     if (!loopWidth) return;
     while (offset <= -loopWidth) offset += loopWidth;
@@ -134,8 +144,13 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
   }
 
   // pause while hovering (or keyboard-focusing) a sticker
+  // only counts once the visitor has actually moved their mouse, so a
+  // sticker sliding under a resting cursor on page load can't freeze it
+  let mouseMoved = false;
+  window.addEventListener("mousemove", function () { mouseMoved = true; }, { once: true });
   track.querySelectorAll(".hobby").forEach(function (item) {
-    item.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
+    item.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse" && mouseMoved) hovering = true; });
+    item.addEventListener("pointermove", function (e) { if (e.pointerType === "mouse") hovering = true; });
     item.addEventListener("pointerleave", function () { hovering = false; });
     item.addEventListener("focus", function () { hovering = true; });
     item.addEventListener("blur", function () { hovering = false; });
@@ -161,9 +176,24 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
   viewport.addEventListener("pointercancel", endDrag);
 
   window.addEventListener("resize", measure);
-  window.addEventListener("load", measure);
-  measure();
-  requestAnimationFrame(frame);
+  window.addEventListener("load", start);
+  // back/forward navigation restoring the page from memory
+  window.addEventListener("pageshow", start);
+  // tab coming back into view
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) start();
+  });
+  // re-measure whenever the stickers change size (e.g. photos finish loading)
+  if ("ResizeObserver" in window) new ResizeObserver(measure).observe(track);
+  track.querySelectorAll("img").forEach(function (img) { img.addEventListener("load", measure); });
+
+  // Chrome can pre-load the page while you're still typing the address;
+  // in that case wait until the page is actually shown before starting
+  if (document.prerendering) {
+    document.addEventListener("prerenderingchange", start, { once: true });
+  } else {
+    start();
+  }
 })();
 
 
@@ -191,203 +221,5 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
       try { localStorage.setItem("theme", next); } catch (e) {}
       label();
     });
-  });
-})();
-
-
-/* ---------- Page transitions ----------
-   Going to another page with the sidebar:
-     //01 //02 //03  this page fades out; on the next page the title
-                     drops in first, then everything else follows it down
-     //04 Minefield  a board of cells drops in, then floods open on the game page
-   Clicking the page you're already on just loads it normally.
-   The head script on every page picks the transition up from sessionStorage. */
-(function () {
-  const root = document.documentElement;
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let busy = false;
-
-  function make(tag, cls, parent) {
-    const node = document.createElement(tag);
-    if (cls) node.className = cls;
-    if (parent) parent.appendChild(node);
-    return node;
-  }
-  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-  function finished(anims) { return Promise.all(anims.map(function (a) { return a.finished; })); }
-  function numOf(link) {
-    const num = link.querySelector(".num");
-    return num ? parseInt(num.textContent.replace(/\D/g, ""), 10) : 0;
-  }
-  function navLink(id) {
-    return Array.from(document.querySelectorAll(".side-nav a")).find(function (a) { return numOf(a) === id; });
-  }
-  function centerOf(el) {
-    if (!el) return { x: innerWidth / 2, y: innerHeight / 2 };
-    const r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-  }
-
-
-  /* ----- //01 //02 //03: title first, then the rest ----- */
-  // lists of cards get split up so each card drops in on its own
-  const SPLIT = ".article-list, .article, .featured, .project-grid";
-
-  // the page broken into pieces in reading order, with the title pulled out
-  function pieces() {
-    const h1 = document.querySelector("main h1");
-    const rest = [];
-    (function walk(parent) {
-      Array.from(parent.children).forEach(function (child) {
-        if (child === h1) return;
-        if ((h1 && child.contains(h1)) || child.matches(SPLIT)) walk(child);
-        else rest.push(child);
-      });
-    })(document.querySelector("main"));
-    const footer = document.querySelector("footer");
-    if (footer) rest.push(footer);
-    return { title: h1, rest: rest };
-  }
-
-  function dropIn() {
-    const p = pieces();
-    // fill "backwards" only: holds the start pose during the delay,
-    // then lets go so hover effects still work afterwards
-    if (p.title) {
-      p.title.animate(
-        [{ opacity: 0, transform: "translateY(-28px)" }, { opacity: 1, transform: "none" }],
-        { duration: 560, delay: 120, easing: "cubic-bezier(.2,.8,.2,1)", fill: "backwards" });
-    }
-    p.rest.forEach(function (el, i) {
-      el.animate(
-        [{ opacity: 0, transform: "translateY(-16px)" }, { opacity: 1, transform: "none" }],
-        { duration: 520, delay: 480 + Math.min(i, 8) * 80, easing: "cubic-bezier(.2,.8,.2,1)", fill: "backwards" });
-    });
-  }
-
-  function fadeOut() {
-    const els = Array.from(document.querySelectorAll("main, footer"));
-    return finished(els.map(function (el) {
-      return el.animate(
-        [{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(8px)" }],
-        { duration: 200, easing: "ease-in", fill: "forwards" });
-    }));
-  }
-
-
-  /* ----- //04: minefield cover ----- */
-  const MINE = {
-    COLORS: { 1: "#2F6FC4", 2: "#2E9E5B", 3: "#E23B3B" },
-    SHUT: "inset 3px 3px 0 rgba(255,255,255,.13), inset -3px -3px 0 rgba(0,0,0,.35)",
-    OPEN: "inset 0 0 0 1px #CDD5DE",
-
-    build: function (origin, covered) {
-      const o = { origin: origin };
-      o.el = make("div", "pt pt-4", document.body);
-      o.el.setAttribute("aria-hidden", "true");
-      o.stage = make("div", "pt-stage", o.el);
-      o.label = make("div", "pt-label", o.el);
-      make("i", "fa-solid fa-bomb", o.label);
-      make("span", "pt-num", o.label).textContent = "//04";
-      make("span", "pt-name", o.label).textContent = "MINEFIELD";
-      if (!covered) o.label.style.opacity = 0;
-
-      // a grid of cells over the screen; each knows how far it is from the link
-      const W = innerWidth, H = innerHeight;
-      const S = Math.max(46, Math.ceil(Math.max(W, H) / 20));
-      o.cells = [];
-      for (let r = 0; r < Math.ceil(H / S); r++) {
-        for (let c = 0; c < Math.ceil(W / S); c++) {
-          const cell = make("div", "pt-cell", o.stage);
-          cell.style.left = c * S + "px";
-          cell.style.top = r * S + "px";
-          cell.style.width = cell.style.height = S + 1 + "px";
-          if (!covered) cell.style.opacity = 0;
-          cell.dist = Math.hypot((c + 0.5) * S - origin.x, (r + 0.5) * S - origin.y) / S;
-          cell.rand = Math.random();
-          o.cells.push(cell);
-        }
-      }
-      o.maxDist = Math.max.apply(null, o.cells.map(function (c) { return c.dist; })) || 1;
-      return o;
-    },
-
-    // cells drop in at random, then the bomb wobbles
-    cover: function (o) {
-      const anims = o.cells.map(function (c) {
-        return c.animate(
-          [{ opacity: 0, transform: "scale(.2)" }, { opacity: 1, transform: "scale(1.1)", offset: .7 }, { opacity: 1, transform: "scale(1)" }],
-          { duration: 220, delay: c.rand * 400, easing: "ease-out", fill: "both" });
-      });
-      anims.push(o.label.animate(
-        [{ opacity: 0, transform: "scale(.6)" }, { opacity: 1, transform: "scale(1.06)", offset: .7 }, { opacity: 1, transform: "scale(1)" }],
-        { duration: 340, delay: 460, easing: "cubic-bezier(.3,1.4,.5,1)", fill: "both" }));
-      anims.push(o.label.firstChild.animate(
-        [{ transform: "rotate(0)" }, { transform: "rotate(-18deg)" }, { transform: "rotate(14deg)" }, { transform: "rotate(-8deg)" }, { transform: "rotate(0)" }],
-        { duration: 500, delay: 560, easing: "ease-in-out" }));
-      return finished(anims);
-    },
-
-    // flood open from the link like clicking an empty cell; the odd one shows a number
-    reveal: function (o) {
-      const step = 520 / o.maxDist;
-      const v = this;
-      o.label.animate([{ opacity: 1, transform: "scale(1)" }, { opacity: 0, transform: "scale(.9)" }],
-        { duration: 200, easing: "ease-in", fill: "forwards" });
-      return finished(o.cells.map(function (c) {
-        const n = c.rand < 0.16 ? 1 : c.rand < 0.24 ? 2 : c.rand < 0.28 ? 3 : 0;
-        if (n) c.textContent = n;
-        const ink = n ? v.COLORS[n] : "transparent";
-        return c.animate([
-          { background: "#3A4152", boxShadow: v.SHUT, color: "transparent", opacity: 1, transform: "scale(1)" },
-          { background: "#E8ECF1", boxShadow: v.OPEN, color: ink, opacity: 1, transform: "scale(1)", offset: .2 },
-          { background: "#E8ECF1", boxShadow: v.OPEN, color: ink, opacity: 1, transform: "scale(.94)", offset: .65 },
-          { background: "#E8ECF1", boxShadow: v.OPEN, color: ink, opacity: 0, transform: "scale(.7)" }
-        ], { duration: 420, delay: 140 + c.dist * step + c.rand * 50, easing: "ease-out", fill: "forwards" });
-      }));
-    }
-  };
-
-
-  // arriving from another page
-  const pending = parseInt(root.dataset.pt, 10);
-  try { sessionStorage.removeItem("pt"); } catch (e) {}
-  if (pending === 4) {
-    busy = true;
-    const o = MINE.build(centerOf(navLink(4)), true);
-    delete root.dataset.pt;
-    wait(140)
-      .then(function () { return MINE.reveal(o); })
-      .then(function () { o.el.remove(); busy = false; });
-  } else {
-    if (pending) dropIn();
-    delete root.dataset.pt;
-  }
-
-  document.querySelectorAll(".side-nav a").forEach(function (link) {
-    link.addEventListener("click", function (e) {
-      const id = numOf(link);
-      if (!id || reduceMotion || busy) return;
-      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      if (new URL(link.href, location.href).pathname === location.pathname) return;
-      e.preventDefault();
-      busy = true;
-      const out = id === 4 ? MINE.cover(MINE.build(centerOf(link), false)) : fadeOut();
-      out.then(function () {
-        try { sessionStorage.setItem("pt", id); } catch (err) {}
-        location.href = link.href;
-      });
-    });
-  });
-
-  // coming back with the browser's back button: undo the exit animation
-  window.addEventListener("pageshow", function (e) {
-    if (!e.persisted) return;
-    document.querySelectorAll(".pt").forEach(function (el) { el.remove(); });
-    document.querySelectorAll("main, footer").forEach(function (el) {
-      el.getAnimations().forEach(function (a) { a.cancel(); });
-    });
-    delete root.dataset.pt;
-    busy = false;
   });
 })();
