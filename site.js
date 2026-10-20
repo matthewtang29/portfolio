@@ -87,8 +87,9 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
 
 
 /* ---------- Hobby slider ("drag me") ----------
-   Slides on its own, stops while you hover a sticker,
-   and can be dragged left/right with mouse or finger. */
+   Dragged left/right with mouse or finger. Set AUTO_SCROLL to true
+   to have it slide on its own again (it stops while you hover a sticker). */
+const AUTO_SCROLL = false;
 (function () {
   const viewport = document.querySelector(".hobbies");
   if (!viewport) return;
@@ -137,7 +138,7 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
   function frame(now) {
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
-    if (!hovering && !dragging && !reduceMotion) offset -= SPEED * dt;
+    if (AUTO_SCROLL && !hovering && !dragging && !reduceMotion) offset -= SPEED * dt;
     wrap();
     track.style.transform = "translateX(" + offset + "px)";
     requestAnimationFrame(frame);
@@ -197,7 +198,10 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
 })();
 
 
-/* ---------- Light / dark mode toggle ---------- */
+/* ---------- Light / dark mode toggle ----------
+   Until the visitor clicks it, the site follows the device setting
+   (pure CSS, so it also updates live). A click saves their choice;
+   the small script in each page's <head> re-applies it before paint. */
 (function () {
   const root = document.documentElement;
   const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -206,13 +210,15 @@ document.querySelectorAll(".hobby img[data-photo]").forEach(function (img) {
     return root.dataset.theme || (media.matches ? "dark" : "light");
   }
   function label() {
-    document.querySelectorAll(".theme-toggle .tip").forEach(function (tip) {
-      tip.textContent = current() === "dark" ? "Light mode" : "Dark mode";
+    const next = current() === "dark" ? "light" : "dark";
+    document.querySelectorAll(".theme-toggle").forEach(function (btn) {
+      btn.setAttribute("aria-label", "Switch to " + next + " mode");
+      const tip = btn.querySelector(".tip");
+      if (tip) tip.textContent = next === "light" ? "Light mode" : "Dark mode";
     });
   }
-  // make sure the icon matches the device setting on first visit
-  root.dataset.theme = current();
   label();
+  if (media.addEventListener) media.addEventListener("change", label);
 
   document.querySelectorAll(".theme-toggle").forEach(function (btn) {
     btn.addEventListener("click", function () {

@@ -6,12 +6,12 @@
 <title>Articles — Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=15">
 <script>
-  // apply saved light/dark choice before the page paints
-  try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
+  try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
 </script>
 </head>
 <body>
@@ -40,7 +40,18 @@
     </section>
 
     <div class="article-list">
-      <article class="card article-row perch bot-bolt">
+      <article class="card article-row perch bot-visor">
+        <img class="card-img" src="images/betavision-climb.jpg" alt="A climber mid-move with a tracked skeleton, numbered holds and a sticky note reading dyno">
+        <div class="body">
+          <div class="top">
+            <span class="kicker">Climbing Analyzer</span>
+            <a class="btn" href="article-betavision.html">View →</a>
+          </div>
+          <p>How I built an app that analyzes my climbing videos, tracking my body and showing which hold each hand and foot is on, even when the camera pans.</p>
+        </div>
+      </article>
+
+      <article class="card article-row">
         <img class="card-img" src="images/desk-robot.jpg" alt="Inside the green 3D-printed desk robot">
         <div class="body">
           <div class="top">
@@ -51,7 +62,7 @@
         </div>
       </article>
 
-      <article class="card article-row perch bot-visor">
+      <article class="card article-row">
         <img class="card-img" src="images/study-tracker.jpg" alt="Pomegranate study tracker app">
         <div class="body">
           <div class="top">
@@ -65,9 +76,9 @@
   </main>
   <footer>
     <span>© 2026 Matthew Tang</span>
-    <span>Built by hand, guarded by robots.</span>
+    <span class="footer-bot"><svg class="mascot" viewBox="0 0 48 44" aria-hidden="true" focusable="false"><line class="m-line" x1="24" y1="10" x2="24" y2="4"/><circle class="m-body" cx="24" cy="4" r="3"/><rect class="m-body" x="8" y="10" width="32" height="26" rx="8"/><rect class="m-visor" x="13" y="16" width="22" height="11" rx="4"/><g class="m-eyes"><rect x="17" y="19" width="4" height="5" rx="1.5"/><rect x="27" y="19" width="4" height="5" rx="1.5"/></g><rect class="m-body" x="6" y="36" width="10" height="7" rx="3.5"/><rect class="m-body" x="32" y="36" width="10" height="7" rx="3.5"/></svg>Built by hand, guarded by robots.</span>
   </footer>
 </div>
-<script src="site.js?v=8"></script>
+<script src="site.js?v=9"></script>
 </body>
 </html>

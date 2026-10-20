@@ -249,13 +249,33 @@
   }
 
   function renderBoard(){
-    const cfg = DIFFICULTIES[currentDiff];
     gridEl.innerHTML = '';
     gridEl.classList.toggle('hex', hexMode);
+    for(let r = 0; r < rows; r++){
+      for(let c = 0; c < cols; c++){
+        gridEl.appendChild(makeCell(r, c));
+      }
+    }
+    layoutBoard();
+  }
 
+  /* Size cells so the whole board fits the available width (no sideways
+     scrolling). Cells never grow past the difficulty's size, and never
+     shrink below MIN_CELL — on very narrow phones the board scrolls instead. */
+  const MIN_CELL = 16;
+  function fitCell(maxSize, gridWidthFor){
+    const cs = getComputedStyle(boardScroll);
+    const avail = boardScroll.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    let size = maxSize;
+    while(size > MIN_CELL && gridWidthFor(size) > avail) size--;
+    return size;
+  }
+
+  function layoutBoard(){
+    const cfg = DIFFICULTIES[currentDiff];
     if(hexMode){
       // pointy-top hexagons; odd rows shift half a cell right
-      const w = cfg.hexSize;
+      const w = fitCell(cfg.hexSize, s => cols * s + s / 2);
       const h = Math.round(w * 1.1547);       // 2/sqrt(3)
       const rowStep = Math.round(h * 0.75);
       gridEl.style.gridTemplateColumns = '';
@@ -263,26 +283,22 @@
       gridEl.style.setProperty('--hex-h', h + 'px');
       gridEl.style.width = (cols * w + w / 2) + 'px';
       gridEl.style.height = ((rows - 1) * rowStep + h) + 'px';
-      for(let r = 0; r < rows; r++){
-        for(let c = 0; c < cols; c++){
-          const btn = makeCell(r, c);
-          btn.style.left = (c * w + (r % 2 ? w / 2 : 0)) + 'px';
-          btn.style.top = (r * rowStep) + 'px';
-          gridEl.appendChild(btn);
-        }
+      for(const btn of gridEl.children){
+        const r = +btn.dataset.r, c = +btn.dataset.c;
+        btn.style.left = (c * w + (r % 2 ? w / 2 : 0)) + 'px';
+        btn.style.top = (r * rowStep) + 'px';
       }
     } else {
+      // cells + 2px gaps + 2px border on each side
+      const size = fitCell(cfg.cellSize, s => cols * s + (cols - 1) * 2 + 4);
       gridEl.style.width = '';
       gridEl.style.height = '';
-      gridEl.style.setProperty('--cell-size', cfg.cellSize + 'px');
+      gridEl.style.setProperty('--cell-size', size + 'px');
       gridEl.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
-      for(let r = 0; r < rows; r++){
-        for(let c = 0; c < cols; c++){
-          gridEl.appendChild(makeCell(r, c));
-        }
-      }
+      for(const btn of gridEl.children){ btn.style.left = ''; btn.style.top = ''; }
     }
   }
+  window.addEventListener('resize', layoutBoard);
 
   function makeCell(r, c){
     const btn = document.createElement('button');
