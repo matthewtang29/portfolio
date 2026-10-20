@@ -519,12 +519,18 @@ h2 .accent{ color: var(--accent); }
 .prose h2{ margin: 48px 0 14px; }
 .prose a:not(.btn){ color: var(--accent); font-weight: 700; }
 .prose .lead{ font-size: 19px; }
+.prose code{ font-size: .88em; padding: 1px 5px; border-radius: 5px; background: var(--surface-2); }
 
 /* a photo, screenshot or clip with a caption underneath */
 .figure{ margin: 32px 0; }
 .figure img, .figure video{ width: 100%; height: auto; background: var(--surface-2); border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
 .figure figcaption{ padding: 12px 18px 14px; font-size: 14px; line-height: 1.5; color: var(--muted); }
 .figure.tall{ max-width: 320px; }   /* phone-shaped clips stay phone-sized */
+/* several small images side by side, sharing one caption */
+.figure .figure-row{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+.figure .figure-row img{ aspect-ratio: 1; object-fit: cover; border-radius: 0; }
+.figure .figure-row img:first-child{ border-top-left-radius: calc(var(--radius) - 1px); }
+.figure .figure-row img:last-child{ border-top-right-radius: calc(var(--radius) - 1px); }
 
 /* the numbers at the end of a write-up */
 .stats{
@@ -607,6 +613,10 @@ footer{
   .article-row .top{ flex-wrap: wrap; }
   .stats{ grid-template-columns: 1fr; }
   .figure.tall{ max-width: none; }
+  .figure .figure-row{ grid-template-columns: 1fr 1fr; }
+  .figure .figure-row img{ border-radius: 0 !important; }
+  .figure .figure-row img:first-child{ border-top-left-radius: calc(var(--radius) - 1px) !important; }
+  .figure .figure-row img:nth-child(2){ border-top-right-radius: calc(var(--radius) - 1px) !important; }
   footer{ margin-top: 72px; }
 }
 

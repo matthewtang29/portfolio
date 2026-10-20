@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Building my desk robot — Matthew Tang</title>
+<title>Building my Pomodoro timer — Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=15">
+<link rel="stylesheet" href="styles.css?v=16">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -35,14 +35,84 @@
     </div>
 
     <section class="hero">
-      <h1>Building my desk robot</h1>
-      <p class="tagline">Article <b>· coming soon</b></p>
+      <h1>Building my Pomodoro timer</h1>
+      <p class="tagline">Article <b>· October 2026</b></p>
     </section>
 
-    <div class="card coming-soon perch bot-gear">
-      <p>I'm still writing this one up. Check back soon!</p>
-      <a class="btn ghost" href="articles.html">← Back to articles</a>
-    </div>
+    <article class="prose">
+      <p class="lead">I study with the Pomodoro method: 25 minutes of focus, a 5 minute break, repeat. A phone timer always pulled me into my phone, so I built a dedicated one that sits on my desk: an Arduino with a small screen, four buttons and a buzzer, inside a 3D-printed cupcake.</p>
+
+      <figure class="card figure perch bot-gear">
+        <img src="images/pomodoro-timer.png" alt="The finished timer: a green 3D-printed cupcake with brown cake rim and white frosting, its LCD reading FOCUSING 24:11">
+        <figcaption>The finished timer mid-focus.</figcaption>
+      </figure>
+
+      <p>It runs on its own from its buttons, and it can be controlled from a computer over USB. It has:</p>
+      <ul>
+        <li>an auto mode with the classic 25/5 split, asking whether to keep going after each cycle</li>
+        <li>a custom mode where you pick the focus length, break length and number of cycles</li>
+        <li>pause, resume and exit on any running timer</li>
+        <li>a mute button that's remembered after a restart</li>
+        <li>checkpoint and summary screens with how many sessions you've done and your total focus time</li>
+      </ul>
+
+      <h2>The circuit</h2>
+      <p>The hardware is an Arduino Uno R3 driving a 16x2 character LCD, with a potentiometer for the screen's contrast, a piezo buzzer, and four push buttons: left, right, select and mute. I prototyped the whole circuit in Tinkercad before wiring anything for real.</p>
+      <p>Each button connects its pin straight to ground. The Arduino has pull-up resistors built in, so turning those on means a pin reads high normally and low when the button is pressed, with no extra resistors on the board.</p>
+
+      <figure class="card figure">
+        <img src="images/pomodoro-circuit.png" alt="Tinkercad simulation of the timer circuit: an Arduino Uno wired to a 16x2 LCD reading PAUSED 24:53, a potentiometer, a buzzer and three push buttons on a breadboard" loading="lazy">
+        <figcaption>The circuit in Tinkercad, showing the paused screen.</figcaption>
+      </figure>
+
+      <h2>Never waiting on <code>delay()</code></h2>
+      <p>The easy way to write a timer on an Arduino is to <code>delay()</code> for a second and count down. The problem is that the Arduino can't do anything else during a delay, so button presses get missed.</p>
+      <p>Instead, the firmware is a state machine. The timer is always in exactly one state, like the main menu, focus, break, paused or the summary screen. Every pass through the main loop reads any USB commands and buttons, checks the clock, moves to the next state if a phase has ended, and redraws the screen. Nothing ever blocks, so a press is handled the moment it happens.</p>
+      <p>Time comes from the Arduino's millisecond clock rather than from counting ticks. Pausing saves how many milliseconds were left, and resuming sets a new end time from that. Buttons are debounced over 30 ms so one press doesn't register as several, and the mute setting is saved to EEPROM, the Arduino's small bit of memory that survives power-off.</p>
+
+      <h2>A cupcake case</h2>
+      <p>I designed the case in Autodesk Fusion and 3D printed it in two pieces. The base holds the electronics and has cutouts for the screen and USB cable. The lid is the decorative part: a cake rim, a frosting swirl and a cherry on top.</p>
+      <p>Instead of screws, the halves are held together by magnets pressed into pockets around the rim, so it opens without tools whenever I need to get at the wiring.</p>
+
+      <figure class="card figure">
+        <img src="images/pomodoro-inside.jpg" alt="Looking down into the open green base of the case: a breadboard and jumper wires packed inside, with magnets set into the rim" loading="lazy">
+        <figcaption>The base with the lid off, showing the wiring and the magnets in the rim.</figcaption>
+      </figure>
+
+      <figure class="card figure">
+        <div class="figure-row">
+          <img src="images/pomodoro-case-base.png" alt="Fusion model of the case base, with the LCD cutout and magnet holes around the rim" loading="lazy">
+          <img src="images/pomodoro-case-rim.png" alt="Fusion model of the lid's cake rim" loading="lazy">
+          <img src="images/pomodoro-case-frosting.png" alt="Fusion model of the lid's frosting swirl" loading="lazy">
+          <img src="images/pomodoro-case-cherry.png" alt="Fusion model of the cherry on top" loading="lazy">
+        </div>
+        <figcaption>The base, cake rim, frosting and cherry, modelled in Fusion.</figcaption>
+      </figure>
+
+      <h2>Talking to a computer</h2>
+      <p>I wanted to control the timer from my laptop too, so it speaks a simple text protocol over USB. Every message is one line. The computer sends commands like <code>START 25 5 4</code> (25 minutes of focus, 5 of break, 4 cycles), <code>PAUSE</code> or <code>EXIT</code>, and the timer replies every second with a line describing everything about itself: its state, the time left, the cycle it's on and whether it's muted.</p>
+      <p>Because the whole state goes out every second, anything listening never has to keep track of the timer itself. If it misses a message, the next one fixes it. That's what my companion app, <a href="article-study-app.html">Pomegranate</a>, uses to show the same countdown on my screen as on the LCD.</p>
+
+      <h2>Testing it</h2>
+      <p>Besides using it every day, I compiled it with the AVR toolchain and ran it in a simulator built from the same code, feeding it USB commands to hit every state change.</p>
+
+      <div class="stats">
+        <div class="card stat"><strong>42%</strong><span>of the Uno's flash memory used</span></div>
+        <div class="card stat"><strong>38%</strong><span>of its RAM used</span></div>
+        <div class="card stat"><strong>1 s</strong><span>between full state updates over USB</span></div>
+        <div class="card stat"><strong>30 ms</strong><span>button debounce window</span></div>
+      </div>
+
+      <h2>What's next</h2>
+      <p>The next version turns the timer into a small wireless desk robot about the size of an action figure. A round touchscreen on an ESP32-S3 becomes its face and countdown ring, Bluetooth replaces the USB cable (using the same text protocol), and it runs on a battery with a vibration motor for silent alerts. I'm also designing a custom PCB in Altium to replace the loose wiring.</p>
+
+      <p>The timer is built with C++ on an Arduino Uno R3, with the case designed in Autodesk Fusion. I designed and built it solo.</p>
+
+      <div class="article-end">
+        <a class="btn" href="https://github.com/matthewtang29" target="_blank" rel="noopener">View on GitHub ↗</a>
+        <a class="btn ghost" href="articles.html">← Back to articles</a>
+      </div>
+    </article>
   </main>
   <footer>
     <span>© 2026 Matthew Tang</span>
