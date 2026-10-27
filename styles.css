@@ -292,7 +292,6 @@ h2 .accent{ color: var(--accent); }
 
 /* card photos keep the card's rounded corners even when the card can't clip them */
 .feature .card-img, .project .card-img{ border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
-.article-row .card-img{ border-radius: calc(var(--radius) - 1px) 0 0 calc(var(--radius) - 1px); }
 .me img{ border-radius: calc(var(--radius) - 1px); }
 
 .card-img{
@@ -443,38 +442,6 @@ h2 .accent{ color: var(--accent); }
 }
 .hobby:hover .label, .hobby:focus-visible .label{ opacity: 1; }
 
-/* ---------- Articles list ---------- */
-.article-list{ display: flex; flex-direction: column; gap: 24px; }
-.article-row{
-  display: grid;
-  grid-template-columns: 220px 1fr;
-}
-.article-row .card-img{ height: 100%; min-height: 160px; }
-.article-row .body{
-  padding: 22px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.article-row .top{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-.article-row .kicker{
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-}
-.article-row p{
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
-}
-
 /* ---------- Projects grid ---------- */
 .project-grid{
   display: grid;
@@ -501,7 +468,7 @@ h2 .accent{ color: var(--accent); }
   margin: 0 0 6px;
 }
 .project p{ margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
-.project .btn{ align-self: flex-end; }
+.project .actions{ display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
 
 /* ---------- Article placeholder pages ---------- */
 .coming-soon{
@@ -601,8 +568,6 @@ footer{
   .hero.with-photo h1{ font-size: clamp(30px, 8vw, 52px); }
   .me{ width: 100%; max-width: 360px; }
   .featured, .project-grid{ grid-template-columns: 1fr; }
-  .article-row{ grid-template-columns: 1fr; }
-  .article-row .card-img{ min-height: 0; aspect-ratio: 16 / 9; border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
   .hobbies{ margin: 0 -24px; }
 }
 @media (max-width: 480px){
@@ -610,7 +575,6 @@ footer{
   .hobbies{ margin: 0 -16px; }
   .link-btn{ width: 38px; height: 38px; }
   .links, .topbar{ gap: 4px; }
-  .article-row .top{ flex-wrap: wrap; }
   .stats{ grid-template-columns: 1fr; }
   .figure.tall{ max-width: none; }
   .figure .figure-row{ grid-template-columns: 1fr 1fr; }
