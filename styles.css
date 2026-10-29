@@ -354,6 +354,7 @@ h2 .accent{ color: var(--accent); }
 }
 .feature:hover{ border-color: var(--accent); }
 .feature .card-img{ aspect-ratio: 16 / 10; }
+.card-img.crop-top{ object-position: top; }   /* keep the top of a tall image when it's cropped */
 .feature .caption{
   display: flex;
   align-items: center;
@@ -487,6 +488,11 @@ h2 .accent{ color: var(--accent); }
 .prose a:not(.btn){ color: var(--accent); font-weight: 700; }
 .prose .lead{ font-size: 19px; }
 .prose code{ font-size: .88em; padding: 1px 5px; border-radius: 5px; background: var(--surface-2); }
+/* code blocks: scroll sideways instead of widening the page */
+.prose pre{ margin: 0 0 18px; padding: 16px 18px; overflow-x: auto; font-size: 14px; line-height: 1.6; }
+.prose pre code{ padding: 0; background: none; font-size: inherit; }
+/* buttons right under the intro, e.g. "Try it live" */
+.prose .lead + .article-end{ margin: 0 0 8px; }
 
 /* a photo, screenshot or clip with a caption underneath */
 .figure{ margin: 32px 0; }

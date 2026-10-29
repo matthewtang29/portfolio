@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="styles.css?v=18">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -77,6 +77,20 @@
           <div class="actions">
             <a class="btn ghost" href="article-study-app.html">Read write-up →</a>
             <a class="btn" href="https://github.com/matthewtang29/pomegranate" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card project" id="tracklog">
+        <img class="card-img" src="images/tracklog.svg" alt="Tracklog's dashboard: hours listened, songs added by month and top songs">
+        <div class="body">
+          <div>
+            <h3>Tracklog</h3>
+            <p>A web app that turns my Apple Music library into a SQL database and shows my listening habits.</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="article-tracklog.html">Read write-up →</a>
+            <a class="btn" href="https://github.com/matthewtang29/Tracklog" target="_blank" rel="noopener">GitHub ↗</a>
           </div>
         </div>
       </article>
