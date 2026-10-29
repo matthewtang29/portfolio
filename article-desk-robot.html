@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=18">
+<link rel="stylesheet" href="styles.css?v=19">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -17,9 +17,8 @@
 <body>
 <div class="page">
   <nav class="side-nav" aria-label="Pages">
-    <a href="index.html"><span class="num">//01</span>Home</a>
-    <a href="projects.html" aria-current="page"><span class="num">//02</span>Projects</a>
-    <a href="game.html"><span class="num">//03</span>Minefield</a>
+    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
+    <a href="game.html"><span class="num">//02</span>Minefield</a>
   </nav>
   <main>
     <div class="topbar">
@@ -109,7 +108,7 @@
 
       <div class="article-end">
         <a class="btn" href="https://github.com/matthewtang29/pomodoro" target="_blank" rel="noopener">View on GitHub ↗</a>
-        <a class="btn ghost" href="projects.html#pomodoro">← Back to projects</a>
+        <a class="btn ghost" href="index.html#pomodoro">← Back to home</a>
       </div>
     </article>
   </main>

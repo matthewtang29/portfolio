@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=18">
+<link rel="stylesheet" href="styles.css?v=19">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -18,8 +18,7 @@
 <div class="page">
   <nav class="side-nav" aria-label="Pages">
     <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
-    <a href="projects.html"><span class="num">//02</span>Projects</a>
-    <a href="game.html"><span class="num">//03</span>Minefield</a>
+    <a href="game.html"><span class="num">//02</span>Minefield</a>
   </nav>
   <main>
     <div class="topbar">
@@ -45,23 +44,62 @@
     </section>
 
     <h2>Featured <span class="accent">Projects</span></h2>
-    <div class="featured">
-      <a class="card feature perch bot-gear left" href="projects.html#betavision">
+    <div class="project-grid">
+      <article class="card project perch bot-gear left" id="betavision">
         <img class="card-img" src="images/betavision-demo-poster.jpg" alt="A boulder climb run through BetaVision, with a skeleton tracking the climber and numbered route holds outlined">
-        <div class="caption"><strong>Climbing Analyzer</strong><span class="arrow">→</span></div>
-      </a>
-      <a class="card feature" href="projects.html#pomodoro">
+        <div class="body">
+          <div>
+            <h3>BetaVision</h3>
+            <p>An app that analyzes my climbing videos, tracking my body and showing which hold each hand and foot is on.</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="article-betavision.html">Read write-up →</a>
+            <a class="btn" href="https://github.com/matthewtang29/BetaVision" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card project" id="pomodoro">
         <img class="card-img" src="images/pomodoro-timer.png" alt="The 3D-printed cupcake Pomodoro timer, its LCD reading FOCUSING 24:11">
-        <div class="caption"><strong>Desk Robot</strong><span class="arrow">→</span></div>
-      </a>
-      <a class="card feature" href="projects.html#pomegranate">
+        <div class="body">
+          <div>
+            <h3>Pomodoro Timer</h3>
+            <p>A desk robot that times my study sessions and keeps me on track.</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="article-desk-robot.html">Read write-up →</a>
+            <a class="btn" href="https://github.com/matthewtang29/pomodoro" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card project" id="pomegranate">
         <img class="card-img" src="images/pomegranate-calendar.png" alt="Pomegranate's Calendar tab for October 2026, with each day's rating, productivity score and tasks">
-        <div class="caption"><strong>Study Tracker</strong><span class="arrow">→</span></div>
-      </a>
-      <a class="card feature" href="projects.html#tracklog">
-        <img class="card-img crop-top" src="images/tracklog.svg" alt="Tracklog's dashboard: hours listened, songs added by month and top songs">
-        <div class="caption"><strong>Music Stats</strong><span class="arrow">→</span></div>
-      </a>
+        <div class="body">
+          <div>
+            <h3>Pomegranate</h3>
+            <p>An app that plans your day, times your focus, and tracks how it went.</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="article-study-app.html">Read write-up →</a>
+            <a class="btn" href="https://github.com/matthewtang29/pomegranate" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card project" id="tracklog">
+        <img class="card-img" src="images/tracklog.svg" alt="Tracklog's dashboard: hours listened, songs added by month and top songs">
+        <div class="body">
+          <div>
+            <h3>Tracklog</h3>
+            <p>A web app that turns my Apple Music library into a SQL database and shows my listening habits.</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="article-tracklog.html">Read write-up →</a>
+            <a class="btn" href="https://github.com/matthewtang29/Tracklog" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </div>
+      </article>
     </div>
 
     <p class="drag-hint"><span>←</span>drag me<span>→</span></p>

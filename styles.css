@@ -291,7 +291,7 @@ h2 .accent{ color: var(--accent); }
 .bot-gear::before { background-image: url(bots/gear.svg); }
 
 /* card photos keep the card's rounded corners even when the card can't clip them */
-.feature .card-img, .project .card-img{ border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
+.project .card-img{ border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0; }
 .me img{ border-radius: calc(var(--radius) - 1px); }
 
 .card-img{
@@ -339,31 +339,6 @@ h2 .accent{ color: var(--accent); }
   width: 300px;
 }
 .me img{ width: 100%; height: auto; }   /* keep the photo's original (vertical) proportions */
-
-/* ---------- Home: featured projects ---------- */
-.featured{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-bottom: 80px;
-}
-.feature{
-  display: block;
-  text-decoration: none;
-  transition: border-color .15s ease;
-}
-.feature:hover{ border-color: var(--accent); }
-.feature .card-img{ aspect-ratio: 16 / 10; }
-.card-img.crop-top{ object-position: top; }   /* keep the top of a tall image when it's cropped */
-.feature .caption{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 14px 18px;
-}
-.feature .caption strong{ font-weight: 700; font-size: 17px; }
-.feature .caption .arrow{ color: var(--accent); font-weight: 700; }
 
 /* ---------- Home: hobby slider ("drag me") ---------- */
 .drag-hint{
@@ -443,11 +418,12 @@ h2 .accent{ color: var(--accent); }
 }
 .hobby:hover .label, .hobby:focus-visible .label{ opacity: 1; }
 
-/* ---------- Projects grid ---------- */
+/* ---------- Home: projects grid ---------- */
 .project-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
+  margin-bottom: 80px;
 }
 .project{
   display: flex;
@@ -573,7 +549,7 @@ footer{
   .hero.with-photo .hero-text{ padding-top: 0; }
   .hero.with-photo h1{ font-size: clamp(30px, 8vw, 52px); }
   .me{ width: 100%; max-width: 360px; }
-  .featured, .project-grid{ grid-template-columns: 1fr; }
+  .project-grid{ grid-template-columns: 1fr; }
   .hobbies{ margin: 0 -24px; }
 }
 @media (max-width: 480px){
