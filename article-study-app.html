@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="styles.css?v=21">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -16,10 +16,6 @@
 </head>
 <body>
 <div class="page">
-  <nav class="side-nav" aria-label="Pages">
-    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
-    <a href="game.html"><span class="num">//02</span>Minefield</a>
-  </nav>
   <main>
     <div class="topbar">
       <button class="link-btn theme-toggle" type="button" aria-label="Switch light/dark mode"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i><span class="tip">Dark mode</span></button>
@@ -38,39 +34,33 @@
     </section>
 
     <article class="prose">
-      <p class="lead">Pomegranate started as a control panel for my <a href="article-desk-robot.html">Pomodoro timer</a> and grew into the one app I use to study: a timer, to-do list, calendar, journal and productivity tracker, synced across my laptop, iPhone and iPad.</p>
+      <p class="lead">Pomegranate started as a remote for my <a href="article-desk-robot.html">Pomodoro timer</a> and kind of snowballed into the app I do all my studying in: timer, to-dos, calendar, journal and stats, synced across my laptop, iPhone and iPad.</p>
 
       <figure class="card figure perch bot-gear">
         <img src="images/study-tracker.jpg" alt="Pomegranate's Timer tab mid-session: a red countdown ring at 43:43, cycle 1 of 3, with Pause and Exit buttons and tabs for Tasks, Calendar, Journal and Analytics">
-        <figcaption>The Timer tab mid-session, installed as a desktop app.</figcaption>
+        <figcaption>The Timer tab mid-session.</figcaption>
       </figure>
 
-      <p>It's a web app that installs like a regular app, with five tabs:</p>
+      <p>It's a web app you can install like a normal one, with five tabs:</p>
       <ul>
-        <li><b>Timer:</b> Pomodoro sessions on my USB timer, or on a timer built into the app</li>
-        <li><b>Tasks:</b> a to-do list with quick add, so typing "Lab report fri p1 d4 #ECE140" sets the due date, priority, difficulty and course in one go</li>
-        <li><b>Calendar:</b> what's due each day, plus that day's productivity score and rating</li>
-        <li><b>Journal:</b> a few lines about the day and a rating out of 10</li>
-        <li><b>Analytics:</b> my focus, break and desk time compared with yesterday and last week</li>
+        <li><b>Timer:</b> runs on my USB timer, or a built-in one</li>
+        <li><b>Tasks:</b> type "Lab report fri p1 d4 #ECE140" and it sets the due date, priority, difficulty and course at once</li>
+        <li><b>Calendar:</b> what's due, plus each day's score</li>
+        <li><b>Journal:</b> a few lines and a rating out of 10</li>
+        <li><b>Analytics:</b> focus, break and desk time vs. yesterday and last week</li>
       </ul>
-      <p>The interesting parts were the ones you can't see: talking to hardware from a browser, keeping time on a phone that keeps falling asleep, and keeping several devices in step.</p>
+      <p>The fun stuff is all under the hood.</p>
 
-      <h2>Talking to a USB timer from a browser</h2>
-      <p>I made Pomegranate a website instead of a desktop program because of the Web Serial API, which lets Chrome and Edge open a USB port directly with no drivers. The whole app is just a GitHub Pages link, and pressing Connect opens the browser's port picker.</p>
-      <p>The timer sends its full state as one line of text every second, like "state=FOCUS left=1342 cycle=2". Data arrives over USB in random-sized chunks, so the app buffers it and only handles a message once it sees a newline. Each line is split into key/value pairs, and the entire screen is redrawn from that. Pressing Pause just sends <code>PAUSE</code>, and the timer's next update changes the screen. The app never decides what state the timer is in, it only shows what the timer tells it.</p>
+      <h2>USB from a browser</h2>
+      <p>It's a website and not a desktop app because of the Web Serial API: Chrome and Edge can open a USB port directly, no drivers. So the whole thing is just a GitHub Pages link with a Connect button.</p>
+      <p>The timer sends a line like "state=FOCUS left=1342 cycle=2" every second, and the app redraws from that. Hitting Pause just sends <code>PAUSE</code> and waits for the timer to say it's paused. The app never decides anything, it just shows what the timer tells it.</p>
 
       <h2>A timer without the timer</h2>
-      <p>On my phone there's no USB timer to plug in. Rather than rewrite the app to handle "no device" everywhere, I wrote a software copy of the Arduino timer that runs inside the app and speaks the exact same protocol. It takes the same commands and sends back the same state lines, into the same code. The countdown ring, task tracking and analytics can't tell whether real hardware is connected.</p>
-      <p>The catch is that browsers slow down timers in background tabs, sometimes to once a minute, and phones pause web apps completely. A timer that counted ticks would fall behind as soon as I switched apps. So the built-in timer stores when each phase <em>ends</em>, not how much time is left. Whenever the app wakes up, it replays every change that should have happened since, timing each new phase from when the last one should have ended. Even if my phone sleeps through a whole break, the timer is exactly right when I open it.</p>
+      <p>There's no USB timer on my phone, so I wrote a software clone of the Arduino that speaks the exact same protocol. The rest of the app can't tell the difference.</p>
+      <p>The catch: phones pause web apps and browsers throttle background tabs, so counting ticks would drift. Instead it stores when each phase <em>ends</em>, and when the app wakes up it replays everything it missed. Phone slept through a whole break? Still exactly right.</p>
 
-      <h2>Scoring a study session</h2>
-      <p>Since the app sees every update, it files each second under focus, break, or paused. From that, every session gets a score out of 100 from three parts:</p>
-      <ul>
-        <li><b>Completion:</b> did I finish all the cycles or check off a task? If not, how much of the planned focus did I do?</li>
-        <li><b>Efficiency:</b> how much of my desk time was focus, compared with what the plan allows. A 25/5 plan can only ever be 83% focus, so 83% counts as perfect and long pauses pull it down.</li>
-        <li><b>Intensity:</b> how hard the tasks were. Every task has a difficulty from 1 to 5, and focus on harder tasks counts for more.</li>
-      </ul>
-      <p>The daily score mixes focus time against a daily goal, how much of the day's tasks got done, and the average session score. If a part has nothing to measure, like a day with no tasks due, it's dropped and the rest are scaled up, so a day isn't punished for something that didn't apply.</p>
+      <h2>Scoring a session</h2>
+      <p>The app knows every second you spent focused, on break or paused, so each session gets a score out of 100:</p>
 
       <div class="stats">
         <div class="card stat"><strong>45%</strong><span>completion: finishing the cycles or a task</span></div>
@@ -79,16 +69,18 @@
         <div class="card stat"><strong>83%</strong><span>the most focus a 25/5 plan can have, which scores as perfect</span></div>
       </div>
 
-      <h2>Syncing between devices</h2>
-      <p>Everything is saved in the browser first, so the app works offline. Signing in with Google mirrors it to Firebase Firestore, a cloud database that pushes changes to every connected device.</p>
-      <p>Tasks and journal entries sync by "newest change wins", and deleting something leaves a small marker behind so the item doesn't come back from another device. Study time can't work that way: if my laptop and phone both logged time on the same day, one would overwrite the other. So each device keeps its own totals, and Analytics adds them up.</p>
-      <p>A running session is shared too. It's one cloud document holding the timer's state, and because every time in it is absolute ("focus ends at 3:42:10 PM"), each device counts down on its own clock without sending updates every second. I can start a session on my laptop and pause it from my phone. Only the device that started a session records it, so 25 minutes doesn't get counted three times, and if the USB timer is plugged into my laptop, a pause from my phone is passed through to the Arduino.</p>
+      <p>The daily score mixes focus time vs. a goal, tasks done, and session scores. If something doesn't apply (like no tasks due), it's dropped instead of counting against you.</p>
 
-      <h2>Alerts when the app is closed</h2>
-      <p>I wanted a notification on my phone whenever a focus block or break ended, but a paused web app can't send one itself. So a small Firebase cloud function runs whenever the shared session changes, works out every phase ending still to come, and schedules a Cloud Task for each one at that exact time. When a task fires, it sends a Web Push notification, which works on iPhones as long as the app is added to the Home Screen.</p>
-      <p>The tricky part was pausing. Instead of hunting down and cancelling scheduled alerts, every change to the session gets a new random ID. When an alert fires, it checks that the ID still matches, and skips itself if it doesn't. Pausing doesn't cancel anything, it just makes the old alerts stale.</p>
+      <h2>Syncing everything</h2>
+      <p>Everything saves locally first so it works offline, and signing in with Google syncs it through Firebase Firestore.</p>
+      <p>Tasks and journal entries go "newest change wins", and deleted stuff leaves a little marker so it doesn't come back from another device. Study time can't work like that (two devices would overwrite each other), so each device keeps its own totals and Analytics adds them up.</p>
+      <p>Running sessions sync too. All the times are absolute ("focus ends at 3:42:10 PM"), so every device counts down on its own. I can start on my laptop and pause from my phone, and if the USB timer's plugged in, the pause goes all the way through to the Arduino. Only the device that started a session logs it, so nothing gets triple-counted.</p>
 
-      <p>Pomegranate is built with JavaScript, the Web Serial API, Firebase (Firestore, Cloud Functions and Cloud Tasks) and Web Push, hosted on GitHub Pages. I designed and built it solo.</p>
+      <h2>Notifications</h2>
+      <p>I wanted a phone notification when a block ends, but a sleeping web app can't send one. So a Firebase function schedules a Cloud Task for every upcoming phase change, and each one fires a Web Push (works on iPhone if the app's on your Home Screen).</p>
+      <p>Pausing was the tricky bit. Instead of cancelling scheduled alerts, every session change gets a new random ID, and an alert just skips itself if its ID is out of date.</p>
+
+      <p>Built solo with JavaScript, Web Serial, Firebase (Firestore, Cloud Functions, Cloud Tasks) and Web Push, hosted on GitHub Pages.</p>
 
       <div class="article-end">
         <a class="btn" href="https://github.com/matthewtang29/pomegranate" target="_blank" rel="noopener">View on GitHub ↗</a>

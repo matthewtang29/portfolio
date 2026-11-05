@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="styles.css?v=21">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -16,10 +16,6 @@
 </head>
 <body>
 <div class="page">
-  <nav class="side-nav" aria-label="Pages">
-    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
-    <a href="game.html"><span class="num">//02</span>Minefield</a>
-  </nav>
   <main>
     <div class="topbar">
       <button class="link-btn theme-toggle" type="button" aria-label="Switch light/dark mode"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i><span class="tip">Dark mode</span></button>
@@ -38,47 +34,24 @@
     </section>
 
     <article class="prose">
-      <p class="lead">Tracklog turns your Apple Music library into a SQL database and shows your listening habits. It runs entirely in your browser.</p>
+      <p class="lead">Tracklog turns your Apple Music library into a SQL database and shows you your listening stats, all inside your browser.</p>
 
       <div class="article-end">
         <a class="btn" href="https://matthewtang29.github.io/Tracklog/" target="_blank" rel="noopener">Try it live ↗</a>
         <a class="btn ghost" href="https://github.com/matthewtang29/Tracklog" target="_blank" rel="noopener">Source on GitHub ↗</a>
       </div>
 
-      <h2>Why I made it</h2>
-      <p>I wanted a project that showed real SQL skills on data I actually care about. Apple Music doesn't give you much: no all-time stats, nothing like Spotify Wrapped on demand. What it <em>does</em> give you is a full library export (<code>Library.xml</code>) with every song's play count, skip count, date added and last played.</p>
-      <p>So the question became: what if that file became a proper relational database, and every stat on the page was just a SQL query you could read?</p>
+      <h2>Why</h2>
+      <p>Apple Music doesn't give you much: no all-time stats, no Wrapped whenever you want it. But it does let you export your whole library (<code>Library.xml</code>) with play counts, skips and dates. I wanted to practice real SQL on data I actually care about, so: what if that file became a proper database, and every stat on the page was just a query you could read?</p>
 
-      <h2>What it does</h2>
-      <p>You drop in your <code>Library.xml</code> (or try the built-in sample library) and get a dashboard:</p>
-      <ul>
-        <li><strong>Total hours listened</strong> and a one-line takeaway</li>
-        <li><strong>Top songs</strong> and <strong>top artists</strong>, ranked by hours, with album covers</li>
-        <li><strong>Playlists</strong>, each with its most-played song</li>
-        <li><strong>Genres</strong>, <strong>forgotten favourites</strong> (songs you played 30+ times but not in the last six months), and <strong>most skipped</strong></li>
-        <li><strong>Added to library by month</strong>, with the peak month highlighted</li>
-        <li>A <strong>SQL console</strong> where you can write your own queries against your own library, with example queries to start from</li>
-      </ul>
-      <p>The file never leaves your computer. There is no server and no account.</p>
-
-      <h2>The stack</h2>
-      <ul>
-        <li><strong>Database:</strong> SQLite, running in the browser through <a href="https://github.com/sql-js/sql.js" target="_blank" rel="noopener">sql.js</a></li>
-        <li><strong>Front end:</strong> plain HTML, CSS and JavaScript (ES modules). No framework, no build step</li>
-        <li><strong>Album art:</strong> Apple's public iTunes Search API</li>
-        <li><strong>Hosting:</strong> GitHub Pages</li>
-      </ul>
-      <p>I kept it deliberately small. The whole app is around 1,500 lines, and the SQL lives in its own <code>.sql</code> files so anyone reading the repo can see exactly how each number is calculated.</p>
+      <h2>What you get</h2>
+      <p>Drop in your <code>Library.xml</code> (or try the sample) and you get total hours, top songs and artists with album covers, each playlist's most-played song, genres, forgotten favourites (30+ plays, nothing in six months), most skipped, and when you added stuff. There's also a SQL console to write your own queries.</p>
+      <p>No server, no account. The file never leaves your computer.</p>
 
       <h2>How it works</h2>
       <pre class="card"><code>Library.xml ─► parse ─► SQLite in the browser ─► one SQL query per card ─► charts</code></pre>
-      <ul>
-        <li><strong>Parsing.</strong> Apple's export is a plist (a nested XML dictionary format). <code>database.js</code> walks it and pulls out songs, artists, albums and playlists, skipping podcasts, videos, folders and Apple's built-in playlists.</li>
-        <li><strong>Schema.</strong> The data goes into a normalized schema: <code>artists → albums → tracks</code>, plus a many-to-many <code>playlist_tracks</code> table. A <code>v_tracks</code> view joins the names back in and computes <code>hours_listened = play_count × duration</code>.</li>
-        <li><strong>Queries.</strong> Every dashboard card runs one query from <code>sql/queries/</code>. They use joins, CTEs, aggregation, window functions (<code>ROW_NUMBER</code>, <code>RANK</code>, <code>SUM() OVER</code>), date functions and a named <code>:export_date</code> parameter so "six months ago" means six months before <em>your</em> export, not today.</li>
-        <li><strong>Rendering.</strong> <code>render.js</code> turns query results into ranked lists, bars and tables.</li>
-      </ul>
-      <p>Here's one I like. Each playlist's most-played song, in one pass:</p>
+      <p>It's SQLite running in the browser through <a href="https://github.com/sql-js/sql.js" target="_blank" rel="noopener">sql.js</a>, with plain HTML, CSS and JS: no framework, no build step, about 1,500 lines total. Your library gets parsed into a normalized schema (<code>artists → albums → tracks</code>, plus playlists), and every card on the dashboard is one query in its own <code>.sql</code> file, so you can see exactly where each number comes from.</p>
+      <p>Here's one I like, each playlist's most-played song in one pass:</p>
       <pre class="card"><code>WITH ranked AS (
   SELECT p.name AS playlist,
          v.title || ' – ' || v.artist AS top_song,
@@ -90,16 +63,15 @@
 )
 SELECT playlist, plays, top_song FROM ranked WHERE rn = 1 ORDER BY plays DESC;</code></pre>
 
-      <h2>The hardest part: album covers</h2>
-      <p><code>Library.xml</code> has no images at all, and a music dashboard without covers looks dead. So I look each song up with the iTunes Search API, which turned out to be the trickiest part of the whole project:</p>
+      <h2>The annoying part: album covers</h2>
+      <p><code>Library.xml</code> has zero images, and a music dashboard without covers looks dead. So every song gets looked up on the iTunes Search API, which turned out to be the hardest part of the whole thing:</p>
       <ul>
-        <li><strong>Wrong matches.</strong> Searching "See You Again" returns a dozen different songs. I match on exact title <em>and</em> artist, prefer the same album, and penalize live, remix, karaoke and cover versions.</li>
-        <li><strong>Missing songs.</strong> Some tracks just don't come back from search. Since every song on an album shares a cover, I fall back to any result by the same artist from the same album. That fixed songs like "Pyramids".</li>
-        <li><strong>Never guess.</strong> If nothing matches, the tile keeps a plain placeholder instead of showing the wrong cover.</li>
-        <li><strong>Rate limits.</strong> iTunes allows roughly 20 searches a minute. Lookups are spaced out, back off for 30 seconds when Apple blocks them, and show "Finding covers… X of Y" while they work.</li>
-        <li><strong>Caching.</strong> Every album cover seen in <em>any</em> search result is saved in the browser, so other songs from that album need no request, and repeat visits load instantly.</li>
+        <li>Search "See You Again" and you get a dozen different songs, so it matches exact title <em>and</em> artist and skips live, remix and karaoke versions.</li>
+        <li>Some songs just don't show up, so it falls back to anything from the same album (same cover anyway).</li>
+        <li>If nothing matches, you get a placeholder instead of the wrong cover.</li>
+        <li>Apple allows ~20 searches a minute, so lookups are spaced out and back off when blocked.</li>
+        <li>Every cover gets cached, so repeat visits load instantly.</li>
       </ul>
-      <p>Artist pictures reuse the same work: each artist's image is the cover of their most-played song, picked in SQL with <code>ROW_NUMBER()</code>.</p>
 
       <div class="stats">
         <div class="card stat"><strong>697</strong><span>songs in my real library</span></div>
@@ -109,42 +81,15 @@ SELECT playlist, plays, top_song FROM ranked WHERE rn = 1 ORDER BY plays DESC;</
       </div>
       <p class="fine">Tested on my own Apple Music library.</p>
 
-      <h2>How I built it: vibe coding with AI</h2>
-      <p>I built Tracklog by pairing with Claude, an AI coding assistant. I'd describe what I wanted in plain English, it would write the code, and I'd test it against my own library and push back when something was off.</p>
-      <p>That loop shaped the project more than any plan did:</p>
-      <ul>
-        <li><strong>It started as a Python script.</strong> The first version loaded my library into SQLite with Python and printed query results. Moving it into the browser meant anyone could try it without installing anything.</li>
-        <li><strong>The name changed three times.</strong> Apple Music analyzer → Liner Notes → Heavy Rotation → Tracklog.</li>
-        <li><strong>The design changed three times.</strong> An Apple Music-style pink and red theme, then a dusty rose one, then the current "Ink &amp; Sage" look I mocked up myself: near-black panels, a sage green accent and a fixed sidebar.</li>
-        <li><strong>Real data caught real bugs.</strong> Running it on my own 697-song library surfaced things a sample never would, like the wrong-cover problem and Apple's rate limits.</li>
-      </ul>
-      <p>My job was product and judgment: deciding what the dashboard should say, catching when numbers looked wrong, and asking "where's the SQL?" until the code was readable enough to explain in an interview.</p>
+      <h2>Building it with AI</h2>
+      <p>I built Tracklog with Claude. I'd describe what I wanted, it'd write the code, and I'd test it on my own library and push back when something was off. It started as a Python script, went through four names (Apple Music analyzer → Liner Notes → Heavy Rotation → Tracklog) and three designs before landing on the "Ink &amp; Sage" look I mocked up myself.</p>
+      <p>My job was mostly judgment: deciding what the dashboard should say, noticing when numbers looked wrong, and asking "where's the SQL?" until the code was readable.</p>
 
-      <h2>Getting it ready to launch</h2>
-      <p>Before sharing it, I ran a full launch, security and privacy pass:</p>
-      <ul>
-        <li><strong>Discoverability:</strong> proper page title and description, Open Graph tags and a link-preview image, a full favicon set, a sitemap, and a custom 404 page.</li>
-        <li><strong>UX:</strong> the upload button above the fold, a sticky upload button on phones, and clear errors for wrong file types or files over 500 MB.</li>
-        <li><strong>Security:</strong> a Content-Security-Policy that only allows the few hosts the app actually uses, a strict referrer policy, and a Subresource Integrity hash on the sql.js script so a tampered CDN file won't run.</li>
-        <li><strong>Privacy:</strong> a privacy page that matches what the code really does (your library stays in your browser; only the title, artist and album of songs on screen go to Apple for cover lookups, and you can turn that off) and a terms page.</li>
-      </ul>
-      <p>I also turned that pass into a reusable checklist I can drop into future projects.</p>
+      <h2>Shipping it</h2>
+      <p>Before sharing it I did a proper launch pass: link previews and SEO, a 404 page, upload errors that actually make sense, a strict Content-Security-Policy, an integrity hash on sql.js, and a privacy page that matches what the code really does (only the title, artist and album of songs on screen go to Apple for covers, and you can turn that off).</p>
 
-      <h2>What I'd add next</h2>
-      <ul>
-        <li><strong>Listening history over time.</strong> Diff weekly library exports to reconstruct play history and find listening streaks (a classic gaps-and-islands SQL problem).</li>
-        <li><strong>Time-of-day patterns</strong> once Apple's full privacy export (with per-play timestamps) arrives.</li>
-        <li><strong>Export</strong> the built database or any query result as CSV.</li>
-      </ul>
-
-      <h2>What I learned</h2>
-      <ul>
-        <li>Designing a normalized schema from messy real-world data</li>
-        <li>Writing SQL that's readable, not just correct: CTEs, window functions, parameters</li>
-        <li>Working around a third-party API's limits with matching rules, caching and backoff</li>
-        <li>Shipping a static site properly: SEO, accessibility, CSP and privacy</li>
-        <li>Using AI as a collaborator while staying the one who decides what "right" looks like</li>
-      </ul>
+      <h2>What's next</h2>
+      <p>Diffing weekly exports to rebuild listening history and find streaks (a classic gaps-and-islands SQL problem), time-of-day patterns once Apple's full privacy export arrives, and CSV export.</p>
 
       <div class="article-end">
         <a class="btn" href="https://matthewtang29.github.io/Tracklog/" target="_blank" rel="noopener">Try it live ↗</a>

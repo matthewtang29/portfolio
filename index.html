@@ -6,9 +6,9 @@
 <title>Matthew Tang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="styles.css?v=21">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -16,10 +16,6 @@
 </head>
 <body>
 <div class="page">
-  <nav class="side-nav" aria-label="Pages">
-    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
-    <a href="game.html"><span class="num">//02</span>Minefield</a>
-  </nav>
   <main>
     <div class="topbar">
       <button class="link-btn theme-toggle" type="button" aria-label="Switch light/dark mode"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i><span class="tip">Dark mode</span></button>
@@ -32,15 +28,25 @@
       </ul>
     </div>
 
-    <section class="hero with-photo">
-      <div class="hero-text">
-        <h1>Hi there,<br><span class="nowrap">I'm Matthew!</span></h1>
-        <p class="tagline">Electrical Engineering 1A <b>@ UWaterloo</b></p>
-        <p class="blurb">looking for Winter 2027 coop</p>
+    <!-- notebook hero: each .roll drops in from the top, in --step order -->
+    <section class="hero notebook">
+      <h1 class="roll" style="--step:1">Hey I'm Matthew!</h1>
+      <div class="roll" style="--step:2">
+        <p class="hand-line">Electrical Eng 1A @ UWaterloo</p>
+        <p class="hand-line small">looking for a Winter 2027 co-op</p>
       </div>
-      <div class="card me perch bot-bolt">
-        <img src="images/me.jpg" alt="Photo of Matthew Tang">
-      </div>
+      <figure class="snapshot roll" style="--step:3">
+        <div class="snapshot-frame">
+          <img src="images/friends.jpg" width="1029" height="769" alt="Matthew and five friends on a beach at sunset, all giving a thumbs up">
+          <!-- viewBox matches the photo's pixels, so the arrow lands on the same spot at any size -->
+          <svg class="me-arrow roll" style="--step:4" viewBox="0 0 1029 769" aria-hidden="true" focusable="false">
+            <text x="860" y="-46" text-anchor="middle">me!</text>
+            <path d="M 860 -26 C 830 70, 650 110, 585 290"/>
+            <path d="M 613 263 L 585 290 L 573 252"/>
+          </svg>
+        </div>
+        <figcaption>favourite friends!</figcaption>
+      </figure>
     </section>
 
     <h2>Featured <span class="accent">Projects</span></h2>
@@ -114,6 +120,8 @@
         <div class="hobby" tabindex="0"><img src="images/hobbies/album.svg" data-photo="images/hobbies/album" alt="" draggable="false"><div class="label"><small>Fav album</small><span>Gemini Rights — Steve Lacy</span></div></div>
       </div>
     </div>
+
+    <p class="minefield-link"><a class="btn ghost" href="game.html">Play Minefield →</a></p>
   </main>
   <footer>
     <span>© 2026 Matthew Tang</span>

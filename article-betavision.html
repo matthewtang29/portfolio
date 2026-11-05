@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="styles.css?v=21">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -16,10 +16,6 @@
 </head>
 <body>
 <div class="page">
-  <nav class="side-nav" aria-label="Pages">
-    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
-    <a href="game.html"><span class="num">//02</span>Minefield</a>
-  </nav>
   <main>
     <div class="topbar">
       <button class="link-btn theme-toggle" type="button" aria-label="Switch light/dark mode"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i><span class="tip">Dark mode</span></button>
@@ -38,54 +34,49 @@
     </section>
 
     <article class="prose">
-      <p class="lead">Climbers film their attempts to study their "beta", the sequence of moves that gets you up a route. I built BetaVision to make that footage something you can actually analyze: it takes a phone video of a climb and turns it into an annotated breakdown.</p>
+      <p class="lead">Climbers film their attempts to figure out their "beta" (the moves that get you up a route). BetaVision takes that shaky phone video and turns it into an annotated breakdown of the climb.</p>
 
       <figure class="card figure tall perch bot-gear">
         <video src="images/betavision-demo.mp4" poster="images/betavision-demo-poster.jpg" autoplay muted loop playsinline controls aria-label="BetaVision analyzing a boulder climb: a skeleton tracks the climber while numbered route holds light up as they're used."></video>
         <figcaption>A real boulder climb, run through BetaVision.</figcaption>
       </figure>
 
-      <p>You mark the route's holds once, and it produces a video with:</p>
+      <p>Mark the holds once and you get back a video with:</p>
       <ul>
-        <li>a full-body skeleton following the climber</li>
+        <li>a skeleton tracking your whole body</li>
         <li>every hold on the route outlined and numbered</li>
-        <li>holds lighting up while a hand or foot is on them</li>
-        <li>hand-written sticky notes like "heel hook" pinned to the right hold at the right moment</li>
-        <li>a CONGRATULATIONS banner when both hands match the final hold</li>
+        <li>holds lighting up when you're on them</li>
+        <li>sticky notes like "heel hook" popping up at the right moment</li>
+        <li>a CONGRATULATIONS banner when you match the top</li>
       </ul>
-      <p>The hard part was making all of that work on real, handheld gym footage.</p>
 
-      <h2>Finding the holds in one click</h2>
-      <p>Routes in a gym are set by colour, so you click one hold and BetaVision outlines every hold of that colour. Gym lighting is uneven, so I flatten it first and then match colours in CIELAB, a colour space that measures colour closer to how our eyes see it.</p>
-      <p>Grey, white and black holds were trickier because they're basically the same colour as the wall. Those get found by their curved outlines instead. For anything auto-detect still misses, there's a manual mode (built on GrabCut) where you click the hold yourself.</p>
+      <h2>Finding holds in one click</h2>
+      <p>Gym routes are colour-coded, so you click one hold and it grabs every hold of that colour. Gym lighting is all over the place, so I flatten it first and compare colours in CIELAB, which is closer to how your eyes see colour.</p>
+      <p>Grey, white and black holds basically blend into the wall, so those get found by shape instead. Anything it still misses, you can just click in yourself.</p>
 
       <figure class="card figure">
         <img src="images/betavision-hold-picker.jpg" alt="BetaVision hold picker on a synthetic test wall, with the route's red holds outlined and numbered, start and end holds marked, and a key of controls on the right" loading="lazy">
-        <figcaption>The hold picker on one of my synthetic test walls. One click outlined every red hold on the route.</figcaption>
+        <figcaption>One click on a synthetic test wall, every red hold found.</figcaption>
       </figure>
 
-      <h2>Volumes, with gym rules</h2>
-      <p>Volumes are the big geometric shapes bolted onto the wall. BetaVision finds them automatically from their straight edges and flat polygon faces, then applies the same rules climbers do: neutral volumes count for every route, coloured ones only count if they match the route, and off-route holds bolted onto a volume are cut out of it.</p>
+      <h2>Volumes</h2>
+      <p>Volumes (the big geometric blocks) get picked up from their straight edges. It follows real gym rules too: neutral volumes count for every route, coloured ones only if they match, and off-route holds bolted onto a volume get cut out.</p>
 
-      <h2>Following a handheld camera</h2>
-      <p>When someone films you on their phone, the camera pans, tilts and zooms the whole time. If the hold outlines just stayed where you drew them, they'd drift off the holds within seconds.</p>
-      <p>So BetaVision tracks the camera frame by frame. It follows small patches of the image between frames (Lucas–Kanade optical flow) and chains together homographies, the transform that maps one view of a flat wall onto another. Small errors pile up over a long video, so it regularly re-anchors itself with ORB feature matching to stop the drift. The result is outlines that stay locked to their holds while the phone moves.</p>
-      <p>If the camera moved, BetaVision also stitches the frames into one panorama of the whole wall. Each pixel is the median across frames, which has a nice side effect: the climber disappears. That means you can mark a tall route in one place instead of chasing it across the video.</p>
+      <h2>Keeping up with a handheld camera</h2>
+      <p>Whoever's filming is panning and zooming the whole time, so outlines drawn on the first frame would slide off the holds within seconds. BetaVision tracks the camera frame to frame (optical flow + homographies) and re-anchors itself with ORB feature matching every so often so small errors don't pile up. The outlines stay stuck to their holds.</p>
+      <p>Bonus: it stitches the frames into one panorama of the wall. Each pixel is the median across frames, so the climber just vanishes, and you can mark a tall route all in one go.</p>
 
       <figure class="card figure">
         <img src="images/betavision-whole-wall.jpg" alt="A stitched panorama of a whole climbing wall in the BetaVision picker, with route holds and three volumes outlined" loading="lazy">
-        <figcaption>Marking a route on the stitched whole-wall view, with three volumes picked up automatically.</figcaption>
+        <figcaption>Marking a route on the stitched wall, with three volumes picked up automatically.</figcaption>
       </figure>
 
-      <h2>Tracking the climber</h2>
-      <p>For the body, I use MediaPipe Pose and keep the 16 joints that matter for climbing. Every frame, each hand and foot gets matched to the nearest hold or volume, which is how the video knows what to light up. The joint angles and contacts can also be exported to a CSV.</p>
+      <h2>The rest</h2>
+      <p>Body tracking is MediaPipe Pose, trimmed to the 16 joints that matter for climbing. Each hand and foot snaps to the nearest hold, which is how it knows what to light up, and you can export it all to a CSV.</p>
+      <p>I didn't want anyone to need a terminal, so it's wrapped in a little local web app (FastAPI + a browser hold picker). On Windows it's a double-click, and nothing leaves your computer.</p>
 
-      <h2>Making it easy to run</h2>
-      <p>I wanted it to be usable without opening a terminal, so the same analysis code is wrapped in a small local web app: a FastAPI server and a browser-based hold picker. On Windows it starts from a double-click launcher, and everything stays on your computer.</p>
-      <p>After a run, you get the annotated video plus how much of the climb was tracked, your top-out time, the sequence of holds you used, and the range of your joint angles.</p>
-
-      <h2>How well it works</h2>
-      <p>I've been using it on my own gym climbs. To measure it properly, I also tested it on 16 synthetic test walls with uneven lighting, chalk, seams and bolt holes.</p>
+      <h2>Does it work?</h2>
+      <p>I use it on my own climbs, and I tested it properly on 16 synthetic walls with bad lighting, chalk, seams and bolt holes:</p>
 
       <div class="stats">
         <div class="card stat"><strong>100%</strong><span>of coloured holds found</span></div>
@@ -95,7 +86,7 @@
       </div>
       <p class="fine">All numbers are on synthetic test walls.</p>
 
-      <p>BetaVision is built with Python, OpenCV, MediaPipe, FastAPI and JavaScript. I designed and built it solo, and the code is open source under the MIT license.</p>
+      <p>Built solo with Python, OpenCV, MediaPipe, FastAPI and JavaScript. It's open source (MIT).</p>
 
       <div class="article-end">
         <a class="btn" href="https://github.com/matthewtang29/BetaVision" target="_blank" rel="noopener">View on GitHub ↗</a>

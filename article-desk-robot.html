@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="styles.css?v=21">
 <script>
   // apply a saved light/dark choice before the page paints (no flash); otherwise CSS follows the device setting
   try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
@@ -16,10 +16,6 @@
 </head>
 <body>
 <div class="page">
-  <nav class="side-nav" aria-label="Pages">
-    <a href="index.html" aria-current="page"><span class="num">//01</span>Home</a>
-    <a href="game.html"><span class="num">//02</span>Minefield</a>
-  </nav>
   <main>
     <div class="topbar">
       <button class="link-btn theme-toggle" type="button" aria-label="Switch light/dark mode"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i><span class="tip">Dark mode</span></button>
@@ -38,43 +34,33 @@
     </section>
 
     <article class="prose">
-      <p class="lead">I study with the Pomodoro method: 25 minutes of focus, a 5 minute break, repeat. A phone timer always pulled me into my phone, so I built a dedicated one that sits on my desk: an Arduino with a small screen, four buttons and a buzzer, inside a 3D-printed cupcake.</p>
+      <p class="lead">I study with Pomodoro (25 minutes of focus, 5 minute break, repeat), but every time I used my phone as the timer, I ended up on my phone. So I built a desk timer instead: an Arduino, a little screen, four buttons and a buzzer, stuffed inside a 3D-printed cupcake.</p>
 
       <figure class="card figure perch bot-gear">
         <img src="images/pomodoro-timer.png" alt="The finished timer: a green 3D-printed cupcake with brown cake rim and white frosting, its LCD reading FOCUSING 24:11">
         <figcaption>The finished timer mid-focus.</figcaption>
       </figure>
 
-      <p>It runs on its own from its buttons, and it can be controlled from a computer over USB. It has:</p>
-      <ul>
-        <li>an auto mode with the classic 25/5 split, asking whether to keep going after each cycle</li>
-        <li>a custom mode where you pick the focus length, break length and number of cycles</li>
-        <li>pause, resume and exit on any running timer</li>
-        <li>a mute button that's remembered after a restart</li>
-        <li>checkpoint and summary screens with how many sessions you've done and your total focus time</li>
-      </ul>
+      <p>It's got a classic 25/5 mode, a custom mode where you pick the lengths and number of cycles, pause/resume, a mute button that remembers itself, and a summary of how much you got done. You can also control it from a computer over USB.</p>
 
       <h2>The circuit</h2>
-      <p>The hardware is an Arduino Uno R3 driving a 16x2 character LCD, with a potentiometer for the screen's contrast, a piezo buzzer, and four push buttons: left, right, select and mute. I prototyped the whole circuit in Tinkercad before wiring anything for real.</p>
-      <p>Each button connects its pin straight to ground. The Arduino has pull-up resistors built in, so turning those on means a pin reads high normally and low when the button is pressed, with no extra resistors on the board.</p>
+      <p>An Arduino Uno, a 16x2 LCD, a potentiometer for contrast, a piezo buzzer and four buttons. I mocked the whole thing up in Tinkercad before touching real wires. The buttons go straight to ground and use the Arduino's built-in pull-ups, so no extra resistors needed.</p>
 
       <figure class="card figure">
         <img src="images/pomodoro-circuit.png" alt="Tinkercad simulation of the timer circuit: an Arduino Uno wired to a 16x2 LCD reading PAUSED 24:53, a potentiometer, a buzzer and three push buttons on a breadboard" loading="lazy">
-        <figcaption>The circuit in Tinkercad, showing the paused screen.</figcaption>
+        <figcaption>The circuit in Tinkercad, paused.</figcaption>
       </figure>
 
-      <h2>Never waiting on <code>delay()</code></h2>
-      <p>The easy way to write a timer on an Arduino is to <code>delay()</code> for a second and count down. The problem is that the Arduino can't do anything else during a delay, so button presses get missed.</p>
-      <p>Instead, the firmware is a state machine. The timer is always in exactly one state, like the main menu, focus, break, paused or the summary screen. Every pass through the main loop reads any USB commands and buttons, checks the clock, moves to the next state if a phase has ended, and redraws the screen. Nothing ever blocks, so a press is handled the moment it happens.</p>
-      <p>Time comes from the Arduino's millisecond clock rather than from counting ticks. Pausing saves how many milliseconds were left, and resuming sets a new end time from that. Buttons are debounced over 30 ms so one press doesn't register as several, and the mute setting is saved to EEPROM, the Arduino's small bit of memory that survives power-off.</p>
+      <h2>No <code>delay()</code> allowed</h2>
+      <p>The easy way to write a timer is <code>delay()</code> for a second and count down, but then the Arduino is frozen and misses button presses. Mine's a state machine instead (menu, focus, break, paused, summary...). Every loop it checks the buttons, USB and the clock, then redraws. Nothing ever blocks, so presses register instantly.</p>
+      <p>Time comes from the Arduino's millisecond clock instead of counting ticks, buttons are debounced over 30 ms, and mute is saved to EEPROM so it survives being unplugged.</p>
 
-      <h2>A cupcake case</h2>
-      <p>I designed the case in Autodesk Fusion and 3D printed it in two pieces. The base holds the electronics and has cutouts for the screen and USB cable. The lid is the decorative part: a cake rim, a frosting swirl and a cherry on top.</p>
-      <p>Instead of screws, the halves are held together by magnets pressed into pockets around the rim, so it opens without tools whenever I need to get at the wiring.</p>
+      <h2>The cupcake</h2>
+      <p>I designed the case in Fusion and printed it in two parts. The base holds the electronics, and the lid is the fun part: cake rim, frosting swirl, cherry on top. Magnets hold it shut, so I can pop it open without a screwdriver.</p>
 
       <figure class="card figure">
         <img src="images/pomodoro-inside.jpg" alt="Looking down into the open green base of the case: a breadboard and jumper wires packed inside, with magnets set into the rim" loading="lazy">
-        <figcaption>The base with the lid off, showing the wiring and the magnets in the rim.</figcaption>
+        <figcaption>Lid off: the wiring, plus the magnets in the rim.</figcaption>
       </figure>
 
       <figure class="card figure">
@@ -84,15 +70,14 @@
           <img src="images/pomodoro-case-frosting.png" alt="Fusion model of the lid's frosting swirl" loading="lazy">
           <img src="images/pomodoro-case-cherry.png" alt="Fusion model of the cherry on top" loading="lazy">
         </div>
-        <figcaption>The base, cake rim, frosting and cherry, modelled in Fusion.</figcaption>
+        <figcaption>Base, cake rim, frosting and cherry in Fusion.</figcaption>
       </figure>
 
       <h2>Talking to a computer</h2>
-      <p>I wanted to control the timer from my laptop too, so it speaks a simple text protocol over USB. Every message is one line. The computer sends commands like <code>START 25 5 4</code> (25 minutes of focus, 5 of break, 4 cycles), <code>PAUSE</code> or <code>EXIT</code>, and the timer replies every second with a line describing everything about itself: its state, the time left, the cycle it's on and whether it's muted.</p>
-      <p>Because the whole state goes out every second, anything listening never has to keep track of the timer itself. If it misses a message, the next one fixes it. That's what my companion app, <a href="article-study-app.html">Pomegranate</a>, uses to show the same countdown on my screen as on the LCD.</p>
+      <p>It speaks a dead simple one-line text protocol over USB. Send <code>START 25 5 4</code> (25 min focus, 5 min break, 4 cycles), <code>PAUSE</code> or <code>EXIT</code>, and every second it replies with its entire state. Since it sends everything every time, whatever's listening never has to keep track. Missed a message? The next one fixes it. That's how <a href="article-study-app.html">Pomegranate</a> mirrors the countdown on my screen.</p>
 
-      <h2>Testing it</h2>
-      <p>Besides using it every day, I compiled it with the AVR toolchain and ran it in a simulator built from the same code, feeding it USB commands to hit every state change.</p>
+      <h2>Testing</h2>
+      <p>Besides using it every day, I ran it in a simulator built from the same code and threw USB commands at it until I'd hit every state.</p>
 
       <div class="stats">
         <div class="card stat"><strong>42%</strong><span>of the Uno's flash memory used</span></div>
@@ -102,9 +87,9 @@
       </div>
 
       <h2>What's next</h2>
-      <p>The next version turns the timer into a small wireless desk robot about the size of an action figure. A round touchscreen on an ESP32-S3 becomes its face and countdown ring, Bluetooth replaces the USB cable (using the same text protocol), and it runs on a battery with a vibration motor for silent alerts. I'm also designing a custom PCB in Altium to replace the loose wiring.</p>
+      <p>V2 is a tiny wireless desk robot, about action-figure size. A round touchscreen on an ESP32-S3 becomes its face, Bluetooth replaces the USB cable (same protocol), and it gets a battery and a vibration motor for silent alerts. I'm also designing a custom PCB in Altium to replace the rat's nest of wires.</p>
 
-      <p>The timer is built with C++ on an Arduino Uno R3, with the case designed in Autodesk Fusion. I designed and built it solo.</p>
+      <p>Built solo: C++ on an Arduino Uno R3, case in Autodesk Fusion.</p>
 
       <div class="article-end">
         <a class="btn" href="https://github.com/matthewtang29/pomodoro" target="_blank" rel="noopener">View on GitHub ↗</a>
