@@ -34,21 +34,37 @@
     </section>
 
     <article class="prose">
-      <p class="lead">Pomegranate started as a remote for my <a href="article-desk-robot.html">Pomodoro timer</a> and kind of snowballed into the app I do all my studying in: timer, to-dos, calendar, journal and stats, synced across my laptop, iPhone and iPad.</p>
+      <p class="lead">Pomegranate started as a remote for my <a href="article-desk-robot.html">Pomodoro timer</a> and kind of snowballed into the app I run my days in: timer, to-dos, calendar, journal, habits and sleep, synced across my laptop, iPhone and iPad.</p>
 
       <figure class="card figure perch bot-gear">
-        <img src="images/study-tracker.jpg" alt="Pomegranate's Timer tab mid-session: a red countdown ring at 43:43, cycle 1 of 3, with Pause and Exit buttons and tabs for Tasks, Calendar, Journal and Analytics">
-        <figcaption>The Timer tab mid-session.</figcaption>
+        <img src="images/pomegranate-timer.png" alt="Pomegranate's Timer tab, ready to start a Deep work 50/10 session, with a green ring around 50:00, a task picker, and today's focus sessions, focus time and score">
+        <figcaption>The Timer tab, ready for a 50/10 deep work session.</figcaption>
       </figure>
 
-      <p>It's a web app you can install like a normal one, with five tabs:</p>
+      <p>It's a web app you can install like a normal one, with six tabs:</p>
       <ul>
         <li><b>Timer:</b> runs on my USB timer, or a built-in one</li>
-        <li><b>Tasks:</b> type "Lab report fri p1 d4 #ECE140" and it sets the due date, priority, difficulty and course at once</li>
-        <li><b>Calendar:</b> what's due, plus each day's score</li>
+        <li><b>Tasks:</b> type "Lab report fri p1 d4 #ECE140" and it sets the due date, priority, difficulty and project at once</li>
+        <li><b>Calendar:</b> what's due, plus each day's score, rating and sleep</li>
         <li><b>Journal:</b> a few lines and a rating out of 10</li>
-        <li><b>Analytics:</b> focus, break and desk time vs. yesterday and last week</li>
+        <li><b>Habits:</b> a month at a glance, one tap per day for yes or no, with streaks</li>
+        <li><b>Sleep:</b> when I went to bed and woke up, and the last two weeks as a chart</li>
       </ul>
+
+      <figure class="card figure">
+        <img src="images/pomegranate-calendar.png?v=3" alt="Pomegranate's Calendar tab for November 2026: each day shows its rating, productivity score, hours slept and tasks, outlined from red to green" loading="lazy">
+        <figcaption>The Calendar: each day's rating, score, sleep and what got done.</figcaption>
+      </figure>
+
+      <figure class="card figure">
+        <img src="images/pomegranate-habits.png" alt="Pomegranate's Habits tab for November 2026: two habits, each with a row of day boxes ticked green for yes or crossed in peach for no, and a 6-day streak" loading="lazy">
+        <figcaption>Habits: green for yes, peach for no.</figcaption>
+      </figure>
+
+      <figure class="card figure">
+        <img src="images/pomegranate-sleep.png" alt="Pomegranate's Sleep tab: bed and wake times for last night, 6h 30m slept, an optional quality rating, and a bar chart of the last 14 nights" loading="lazy">
+        <figcaption>Sleep: log the night, see the last two weeks.</figcaption>
+      </figure>
       <p>The fun stuff is all under the hood.</p>
 
       <h2>USB from a browser</h2>
@@ -73,7 +89,7 @@
 
       <h2>Syncing everything</h2>
       <p>Everything saves locally first so it works offline, and signing in with Google syncs it through Firebase Firestore.</p>
-      <p>Tasks and journal entries go "newest change wins", and deleted stuff leaves a little marker so it doesn't come back from another device. Study time can't work like that (two devices would overwrite each other), so each device keeps its own totals and Analytics adds them up.</p>
+      <p>Tasks, journal entries, habits and sleep go "newest change wins", and deleted stuff leaves a little marker so it doesn't come back from another device. Study time can't work like that (two devices would overwrite each other), so each device keeps its own totals and the app adds them up.</p>
       <p>Running sessions sync too. All the times are absolute ("focus ends at 3:42:10 PM"), so every device counts down on its own. I can start on my laptop and pause from my phone, and if the USB timer's plugged in, the pause goes all the way through to the Arduino. Only the device that started a session logs it, so nothing gets triple-counted.</p>
 
       <h2>Notifications</h2>
